@@ -1,13 +1,23 @@
 package live.smoothing.device.broker.service;
 
-import live.smoothing.device.broker.dto.BrokerGenerateRequest;
-import live.smoothing.device.broker.entity.Broker;
+import live.smoothing.device.broker.dto.*;
 
 import java.util.List;
 
 public interface BrokerService {
 
-    Broker addBroker(BrokerGenerateRequest request);
-    String getBrokerName(Integer brokerId);
-    List<Broker> getBrokers();
+    List<BrokerInitResponse> getInitBrokers();
+
+    void addBroker(BrokerAddRequest request);
+
+    BrokerListResponse getBrokers();
+
+    void updateBroker(Integer brokerId, BrokerUpdateRequest brokerUpdateRequest);
+
+    void deleteBroker(Integer brokerId);
+
+    BrokerErrorListResponse getErrors();
+
+    void deleteError(Integer brokerErrorId);
+
 }

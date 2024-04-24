@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SensorRegisterRequest {
 
-    private String topic;
-    private Integer brokerId;
+    private String sensorType;
     private String sensorName;
-    private SensorType sensorType;
+    private Integer brokerId;
 }
