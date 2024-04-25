@@ -22,7 +22,7 @@ public class ErrorRabbit {
         brokerService.addBrokerError(request);
     }
 
-    @RabbitListener(queues = "add-sendError-queue", containerFactory = "jsonContainerFactory")
+    @RabbitListener(queues = "add-sensorError-queue", containerFactory = "jsonContainerFactory")
     public void receiveAddSendErrorMessage(SensorErrorRequest request) {
         log.info("Received Add Broker message: {}", request);
         sensorService.addSensorError(request);
