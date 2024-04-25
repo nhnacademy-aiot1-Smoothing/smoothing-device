@@ -4,24 +4,30 @@ import live.smoothing.device.broker.dto.BrokerListResponse;
 import live.smoothing.device.broker.entity.Broker;
 import live.smoothing.device.broker.exception.BrokerNotFoundException;
 import live.smoothing.device.broker.repository.BrokerRepository;
+import live.smoothing.device.mq.dto.SensorErrorRequest;
 import live.smoothing.device.sensor.dto.*;
 import live.smoothing.device.sensor.entity.Sensor;
 import live.smoothing.device.sensor.entity.SensorErrorLog;
 import live.smoothing.device.sensor.entity.SensorType;
+import live.smoothing.device.sensor.entity.Topic;
 import live.smoothing.device.sensor.exception.SensorErrorLogNotFoundException;
 import live.smoothing.device.sensor.exception.SensorNotFoundException;
 import live.smoothing.device.sensor.exception.SensorTypeNoutFoundException;
 import live.smoothing.device.sensor.repository.SensorErrorLogRepository;
 import live.smoothing.device.sensor.repository.SensorRepository;
 import live.smoothing.device.sensor.repository.SensorTypeRepository;
+import live.smoothing.device.sensor.repository.TopicRepository;
 import live.smoothing.device.sensor.service.SensorService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service("sensorService")
 public class SensorServiceImpl implements SensorService {
@@ -30,6 +36,7 @@ public class SensorServiceImpl implements SensorService {
     private final SensorTypeRepository sensorTypeRepository;
     private final BrokerRepository brokerRepository;
     private final SensorErrorLogRepository sensorErrorLogRepository;
+    private final TopicRepository topicRepository;
 
     @Override
     @Transactional
@@ -95,6 +102,30 @@ public class SensorServiceImpl implements SensorService {
     @Override
     public SensorTypeListResponse getSensorTypes() {
         return new SensorTypeListResponse(sensorTypeRepository.getAllSensorType());
+    }
+
+    @Override
+    public void addSensorError(SensorErrorRequest request) {
+        Optional<Sensor> sensor = sensorRepository.findById(request.getSensorId());
+        if(sensor.isEmpty()) {
+            log.error("Sensor not found with id: {}", request.getSensorId());
+            return;
+        }
+
+        Optional<Topic> topic = topicRepository.findByTopicAndSensorSensorId(request.getTopic(), request.getSensorId());
+        if(topic.isEmpty()) {
+            log.error("Topic not found with topic: {} and sensorId: {}", request.getTopic(), request.getSensorId());
+            return;
+        }
+
+        SensorErrorLog sensorErrorLog = SensorErrorLog.builder()
+                .sensor(sensor.get())
+                .sensorErrorType(request.getSensorErrorType())
+                .sensorErrorValue(request.getSensorValue())
+                .topic(topic.get())
+                .sensorErrorCreatedAt(request.getCreatedAt())
+                .build();
+        sensorErrorLogRepository.save(sensorErrorLog);
     }
 
 }

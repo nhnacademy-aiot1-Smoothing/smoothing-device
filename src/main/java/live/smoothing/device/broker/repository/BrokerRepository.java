@@ -11,7 +11,7 @@ public interface BrokerRepository extends JpaRepository<Broker, Integer> {
 
     boolean existsByBrokerIpOrBrokerName(String ip, String name);
 
-    @Query("SELECT b FROM Broker b JOIN FETCH Sensor s ON b.brokerId = s.broker.brokerId JOIN FETCH Topic t ON s.sensorId = t.sensor.sensorId")
+    @Query("SELECT b FROM Broker b JOIN FETCH Sensor s ON b.brokerId = s.broker.brokerId LEFT OUTER JOIN FETCH Topic t ON s.sensorId = t.sensor.sensorId")
     List<Broker> getAllWith();
 
     @Query("SELECT new live.smoothing.device.broker.dto.BrokerResponse(b.brokerId, b.brokerIp, b.brokerPort, b.brokerName, b.protocolType.protocolType) FROM Broker b")

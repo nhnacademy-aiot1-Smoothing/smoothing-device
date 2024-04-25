@@ -10,6 +10,7 @@ import live.smoothing.device.sensor.exception.TopicAlreadyExistException;
 import live.smoothing.device.sensor.exception.SensorNotFoundException;
 import live.smoothing.device.sensor.exception.TopicNotFoundException;
 import live.smoothing.device.sensor.exception.TopicTypeNotExistException;
+import live.smoothing.device.mq.producer.SensorMQ;
 import live.smoothing.device.sensor.repository.SensorRepository;
 import live.smoothing.device.sensor.repository.TopicRepository;
 import live.smoothing.device.sensor.repository.TopicTypeRepository;
@@ -25,6 +26,7 @@ public class TopicServiceImpl implements TopicService {
     private final TopicRepository topicRepository;
     private final TopicTypeRepository topicTypeRepository;
     private final SensorRepository sensorRepository;
+    private final SensorMQ sensorMQ;
 
     @Override
     @Transactional
@@ -39,8 +41,8 @@ public class TopicServiceImpl implements TopicService {
                 .topicType(topicType)
                 .sensor(sensorRepository.getReferenceById(topicAddRequest.getSensorId()))
                 .build();
-        //todo mq
         topicRepository.save(topic);
+        sensorMQ.saveTopic(topicAddRequest.getSensorId(), topicAddRequest.getTopic());
     }
 
     @Override
@@ -60,18 +62,22 @@ public class TopicServiceImpl implements TopicService {
         TopicType topicType = topicTypeRepository.findById(topicUpdateRequest.getTopicType())
                 .orElseThrow(TopicTypeNotExistException::new);
 
+        String oldTopic = topic.getTopic();
+
         topic.updateTopic(topicUpdateRequest.getTopic());
         topic.updateTopicType(topicType);
-        //todo mq
         topicRepository.save(topic);
+
+        sensorMQ.deleteTopic(topic.getSensor().getSensorId(), oldTopic);
+        sensorMQ.saveTopic(topic.getSensor().getSensorId(), topic.getTopic());
     }
 
     @Override
     public void deleteTopic(Integer topicId) {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new TopicNotFoundException());
-        //todo mq
         topicRepository.delete(topic);
+        sensorMQ.deleteTopic(topic.getSensor().getSensorId(), topic.getTopic());
     }
 
     @Override

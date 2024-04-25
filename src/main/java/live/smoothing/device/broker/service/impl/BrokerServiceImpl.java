@@ -11,7 +11,11 @@ import live.smoothing.device.broker.repository.BrokerErrorLogRepository;
 import live.smoothing.device.broker.repository.BrokerRepository;
 import live.smoothing.device.broker.repository.ProtocolTypeRepository;
 import live.smoothing.device.broker.service.BrokerService;
+import live.smoothing.device.mq.dto.BrokerErrorRequest;
+import live.smoothing.device.mq.producer.BrokerRabbit;
+import live.smoothing.device.mq.producer.SensorRabbit;
 import live.smoothing.device.sensor.entity.Topic;
+import live.smoothing.device.sensor.repository.TopicRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +29,11 @@ import java.util.stream.Collectors;
 public class BrokerServiceImpl implements BrokerService {
 
     private final BrokerRepository brokerRepository;
+    private final TopicRepository topicRepository;
     private final ProtocolTypeRepository protocolTypeRepository;
     private final BrokerErrorLogRepository brokerErrorLogRepository;
+    private final BrokerRabbit brokerRabbit;
+    private final SensorRabbit sensorRabbit;
 
     @Override
     public List<BrokerInitResponse> getInitBrokers() {
@@ -59,7 +66,7 @@ public class BrokerServiceImpl implements BrokerService {
                 .protocolType(protocolType)
                 .build();
         brokerRepository.save(broker);
-        //todo mq
+        brokerRabbit.saveBroker(broker.getBrokerIp(), broker.getBrokerPort(), broker.getBrokerId(), protocolType.getProtocolType());
     }
 
     @Override
@@ -80,7 +87,12 @@ public class BrokerServiceImpl implements BrokerService {
         broker.updateBrokerName(brokerUpdateRequest.getBrokerName());
         broker.updateProtocolType(protocolType);
         brokerRepository.save(broker);
-        //todo mq
+        brokerRabbit.deleteBroker(brokerId);
+        List<Topic> topics = topicRepository.getTopicBySensorBrokerBrokerId(brokerId);
+        brokerRabbit.saveBroker(broker.getBrokerIp(), broker.getBrokerPort(), broker.getBrokerId(), protocolType.getProtocolType());
+        for(Topic topic : topics) {
+            sensorRabbit.saveTopic(broker.getBrokerId(), topic.getTopic());
+        }
     }
 
     @Override
@@ -88,7 +100,7 @@ public class BrokerServiceImpl implements BrokerService {
         Broker broker = brokerRepository.findById(brokerId)
                 .orElseThrow(BrokerNotFoundException::new);
         brokerRepository.delete(broker);
-        //todo mq
+        brokerRabbit.deleteBroker(brokerId);
     }
 
     @Override
@@ -101,5 +113,15 @@ public class BrokerServiceImpl implements BrokerService {
         BrokerErrorLog brokerErrorLog = brokerErrorLogRepository.findById(brokerErrorId)
                 .orElseThrow(BrokerErrorNotFoundException::new);
         brokerErrorLogRepository.delete(brokerErrorLog);
+    }
+
+    @Override
+    public void addBrokerError(BrokerErrorRequest request) {
+        BrokerErrorLog brokerErrorLog = BrokerErrorLog.builder()
+                .broker(brokerRepository.getReferenceById(request.getBrokerId()))
+                .brokerErrorType(request.getBrokerErrorType())
+                .brokerErrorCreatedAt(request.getCreatedAt())
+                .build();
+        brokerErrorLogRepository.save(brokerErrorLog);
     }
 }

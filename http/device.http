@@ -6,7 +6,7 @@ POST http://localhost:8005/api/device/topics
 Content-Type: application/json
 
 {
-  "topic": "data/s/nhnacademy/d/gems-3500/e/eletric",
+  "topic": "#",
   "topicType": "전력",
   "sensorId": 1
 }
@@ -68,7 +68,7 @@ POST http://localhost:8005/api/device/brokers
 Content-Type: application/json
 
 {
-  "brokerIp": "133.185.12.123",
+  "brokerIp": "133.186.153.19",
   "brokerPort": 1883,
   "brokerName": "broker1",
   "protocolType": "MQTT"
@@ -82,8 +82,8 @@ PUT http://localhost:8005/api/device/brokers/1
 Content-Type: application/json
 
 {
-  "brokerIp": "444.444.444.444",
-  "brokerPort": 1881,
+  "brokerIp": "133.186.153.19",
+  "brokerPort": 1883,
   "brokerName": "broker2",
   "protocolType": "MQTT"
 }

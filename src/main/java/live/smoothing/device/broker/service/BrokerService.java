@@ -1,6 +1,7 @@
 package live.smoothing.device.broker.service;
 
 import live.smoothing.device.broker.dto.*;
+import live.smoothing.device.mq.dto.BrokerErrorRequest;
 
 import java.util.List;
 
@@ -19,5 +20,7 @@ public interface BrokerService {
     BrokerErrorListResponse getErrors();
 
     void deleteError(Integer brokerErrorId);
+
+    void addBrokerError(BrokerErrorRequest request);
 
 }

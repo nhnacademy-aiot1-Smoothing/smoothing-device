@@ -83,7 +83,7 @@ insert into brokers values (null, '133.186.153.19', 1883, '전력', 'MQTT');
 
 insert into sensors values (null, 1, 'test','2024-04-21','전기');
 
-insert into topics values (null,'#',null,1,'전력');
+-- insert into topics values (null,'#',null,1,'전력');
 
-insert into sensor_error_logs values (null, '전압', '2024-04-21 00:00:00', 100.0, 1, 1);
+-- insert into sensor_error_logs values (null, '전압', '2024-04-21 00:00:00', 100.0, 1, 1);
 insert into broker_error_logs values (null, 1, '전압', '2024-04-21 00:00:00', '2024-04-21 00:00:00');
