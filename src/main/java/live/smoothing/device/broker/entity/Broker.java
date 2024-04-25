@@ -11,6 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NamedEntityGraph(name = "Broker.sensors", attributeNodes = @NamedAttributeNode("sensors"))
 @Table(name = "brokers")
 public class Broker {
 
@@ -32,6 +33,22 @@ public class Broker {
     @JoinColumn(name = "protocol_type")
     private ProtocolType protocolType;
 
-    @OneToMany(mappedBy = "broker", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "broker", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Sensor> sensors;
+
+    public void updateBrokerIp(String brokerIp) {
+        this.brokerIp = brokerIp;
+    }
+
+    public void updateBrokerPort(Integer brokerPort) {
+        this.brokerPort = brokerPort;
+    }
+
+    public void updateBrokerName(String brokerName) {
+        this.brokerName = brokerName;
+    }
+
+    public void updateProtocolType(ProtocolType protocolType) {
+        this.protocolType = protocolType;
+    }
 }

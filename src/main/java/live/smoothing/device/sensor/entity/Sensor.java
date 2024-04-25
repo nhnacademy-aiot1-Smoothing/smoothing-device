@@ -19,6 +19,7 @@ import java.util.List;
 public class Sensor {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sensor_id")
     private Integer sensorId;
 
@@ -36,6 +37,14 @@ public class Sensor {
     @JoinColumn(name = "sensor_type")
     private SensorType sensorType;
 
-    @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Topic> topics;
+
+    public void updateSensorType(SensorType sensorType) {
+        this.sensorType = sensorType;
+    }
+
+    public void updateSensorName(String sensorName) {
+        this.sensorName = sensorName;
+    }
 }
