@@ -5,6 +5,7 @@ import live.smoothing.device.broker.dto.*;
 import live.smoothing.device.broker.entity.Broker;
 import live.smoothing.device.broker.entity.BrokerErrorLog;
 import live.smoothing.device.broker.entity.ProtocolType;
+import live.smoothing.device.broker.exception.AlreadyExistBroker;
 import live.smoothing.device.broker.exception.BrokerErrorNotFoundException;
 import live.smoothing.device.broker.exception.BrokerNotFoundException;
 import live.smoothing.device.broker.exception.ProtocolTypeNotFoundException;
@@ -71,6 +72,11 @@ public class BrokerServiceImpl implements BrokerService {
     public void addBroker(BrokerAddRequest request) {
         ProtocolType protocolType = protocolTypeRepository.findById(request.getProtocolType())
                 .orElseThrow(ProtocolTypeNotFoundException::new);
+
+        if(brokerRepository.existsByBrokerIpAndBrokerPort(request.getBrokerIp(), request.getBrokerPort())) {
+            throw new AlreadyExistBroker();
+        }
+
 
         Broker broker = Broker.builder()
                 .brokerName(request.getBrokerName())

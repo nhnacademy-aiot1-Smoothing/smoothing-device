@@ -4,6 +4,7 @@ import live.smoothing.device.broker.dto.*;
 import live.smoothing.device.broker.entity.Broker;
 import live.smoothing.device.broker.entity.BrokerErrorLog;
 import live.smoothing.device.broker.entity.ProtocolType;
+import live.smoothing.device.broker.exception.AlreadyExistBroker;
 import live.smoothing.device.broker.exception.BrokerErrorNotFoundException;
 import live.smoothing.device.broker.exception.BrokerNotFoundException;
 import live.smoothing.device.broker.exception.ProtocolTypeNotFoundException;
@@ -118,6 +119,21 @@ class BrokerServiceImplTest {
     }
 
     @Test
+    void addBroker_broker_alreadyExist_throwError() {
+        BrokerAddRequest brokerAddRequest = new BrokerAddRequest();
+        ReflectionTestUtils.setField(brokerAddRequest, "brokerIp", "123.456.789.0");
+        ReflectionTestUtils.setField(brokerAddRequest, "brokerPort", 1234);
+        ReflectionTestUtils.setField(brokerAddRequest, "brokerName", "testBroker");
+        ReflectionTestUtils.setField(brokerAddRequest, "protocolType", "testProtocolType");
+
+        when(protocolTypeRepository.findById(brokerAddRequest.getProtocolType())).thenReturn(Optional.of(new ProtocolType(brokerAddRequest.getProtocolType())));
+        when(brokerRepository.existsByBrokerIpAndBrokerPort(brokerAddRequest.getBrokerIp(), brokerAddRequest.getBrokerPort())).thenReturn(true);
+
+        assertThrows(AlreadyExistBroker.class, () -> brokerService.addBroker(brokerAddRequest));
+        verify(brokerRepository, times(0)).save(any(Broker.class));
+    }
+
+    @Test
     void addBroker(){
         BrokerAddRequest brokerAddRequest = new BrokerAddRequest();
         ReflectionTestUtils.setField(brokerAddRequest, "brokerIp", "123.456.789.0");
@@ -133,11 +149,13 @@ class BrokerServiceImplTest {
                 .build();
 
         when(protocolTypeRepository.findById(brokerAddRequest.getProtocolType())).thenReturn(Optional.of(new ProtocolType(brokerAddRequest.getProtocolType())));
+        when(brokerRepository.existsByBrokerIpAndBrokerPort(brokerAddRequest.getBrokerIp(), brokerAddRequest.getBrokerPort())).thenReturn(false);
         when(brokerRepository.save(any(Broker.class))).thenReturn(broker);
 
         brokerService.addBroker(brokerAddRequest);
 
         verify(brokerRepository, times(1)).save(any(Broker.class));
+        verify(brokerRepository, times(1)).existsByBrokerIpAndBrokerPort(brokerAddRequest.getBrokerIp(), brokerAddRequest.getBrokerPort());
         verify(ruleEngineAdapter, times(1)).addBroker(any(BrokerGenerateRequest.class));
     }
 
