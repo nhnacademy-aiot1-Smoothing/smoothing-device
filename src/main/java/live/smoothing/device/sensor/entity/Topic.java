@@ -24,7 +24,7 @@ public class Topic {
     @Column(name = "topic_registered_at")
     private LocalDateTime topicRegisteredAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sensor_id")
     private Sensor sensor;
 

@@ -2,20 +2,14 @@ package live.smoothing.device.broker.dto;
 
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class BrokerInitResponse {
-
-    private Integer brokerId;
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class BrokerRequest {
 
     private String brokerIp;
-
-    private Integer brokerPort;
-
+    private int brokerPort;
+    private Integer brokerId;
     private String protocolType;
-
-    private List<String> topics;
 }

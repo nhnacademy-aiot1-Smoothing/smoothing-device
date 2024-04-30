@@ -1,20 +1,21 @@
 package live.smoothing.device.controller;
 
-import live.smoothing.device.sensor.dto.TopicAddRequest;
-import live.smoothing.device.sensor.dto.TopicListResponse;
-import live.smoothing.device.sensor.dto.TopicTypeListResponse;
-import live.smoothing.device.sensor.dto.TopicUpdateRequest;
+import live.smoothing.device.sensor.dto.*;
+import live.smoothing.device.sensor.service.TagService;
 import live.smoothing.device.sensor.service.TopicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/device/topics")
 public class TopicController {
     private final TopicService topicService;
+    private final TagService tagService;
 
     @PostMapping
     public ResponseEntity<Void> addTopic(@RequestBody TopicAddRequest topicAddRequest) {
@@ -42,5 +43,11 @@ public class TopicController {
     @GetMapping("/types")
     public ResponseEntity<TopicTypeListResponse> getTopicTypes() {
         return ResponseEntity.ok(topicService.getTopicTypes());
+    }
+
+    @GetMapping
+    public ResponseEntity<TagTopicResponse> getTagTopics(@RequestParam("userId") String userId, @RequestParam("tags") List<String> tags) {
+        System.out.println(tags);
+        return ResponseEntity.ok(tagService.getTagTopics(userId, tags));
     }
 }

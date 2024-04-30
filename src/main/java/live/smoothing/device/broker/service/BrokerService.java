@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface BrokerService {
 
-    List<BrokerInitResponse> getInitBrokers();
+    List<RuleEngineResponse> getInitBrokers();
 
     void addBroker(BrokerAddRequest request);
 

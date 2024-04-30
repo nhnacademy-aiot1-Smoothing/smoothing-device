@@ -9,10 +9,11 @@ import java.util.List;
 @Getter
 @Entity
 @Builder
+@Table(name = "brokers")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @NamedEntityGraph(name = "Broker.sensors", attributeNodes = @NamedAttributeNode("sensors"))
-@Table(name = "brokers")
+//@NamedEntityGraph(name = "Broker.sensors.topics", attributeNodes = @NamedAttributeNode(value = "sensors", subgraph = "sensors.topics"), subgraphs = @NamedSubgraph(name = "sensors.topics", attributeNodes = @NamedAttributeNode("topics")))
 public class Broker {
 
     @Id

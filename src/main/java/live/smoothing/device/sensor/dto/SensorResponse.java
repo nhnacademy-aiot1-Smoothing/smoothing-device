@@ -11,12 +11,12 @@ public class SensorResponse {
     private final Integer sensorId;
     private final String sensorType;
     private final String sensorName;
-    private final LocalDateTime sensorRegisteredAt;
+    private final String sensorRegisteredAt;
 
     public SensorResponse(Integer sensorId, SensorType sensorType, String sensorName, LocalDateTime sensorRegisteredAt) {
         this.sensorId = sensorId;
         this.sensorType = sensorType.getSensorType();
         this.sensorName = sensorName;
-        this.sensorRegisteredAt = sensorRegisteredAt;
+        this.sensorRegisteredAt = sensorRegisteredAt.toString();
     }
 }

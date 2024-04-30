@@ -1,10 +1,11 @@
 package live.smoothing.device.sensor.service.impl;
 
-import live.smoothing.device.broker.dto.BrokerListResponse;
+import live.smoothing.device.adapter.RuleEngineAdapter;
 import live.smoothing.device.broker.entity.Broker;
 import live.smoothing.device.broker.exception.BrokerNotFoundException;
 import live.smoothing.device.broker.repository.BrokerRepository;
 import live.smoothing.device.mq.dto.SensorErrorRequest;
+import live.smoothing.device.sensor.dto.TopicRequest;
 import live.smoothing.device.sensor.dto.*;
 import live.smoothing.device.sensor.entity.Sensor;
 import live.smoothing.device.sensor.entity.SensorErrorLog;
@@ -37,6 +38,7 @@ public class SensorServiceImpl implements SensorService {
     private final BrokerRepository brokerRepository;
     private final SensorErrorLogRepository sensorErrorLogRepository;
     private final TopicRepository topicRepository;
+    private final RuleEngineAdapter ruleEngineAdapter;
 
     @Override
     @Transactional
@@ -81,10 +83,13 @@ public class SensorServiceImpl implements SensorService {
 
     @Override
     public void deleteSensor(Integer sensorId) {
-        Sensor sensor = sensorRepository.findById(sensorId)
+        Sensor sensor = sensorRepository.findSensorWithTopicBySensorId(sensorId)
                 .orElseThrow(SensorNotFoundException::new);
-        //todo mq
         sensorRepository.delete(sensor);
+
+        for(Topic t : sensor.getTopics()) {
+            ruleEngineAdapter.deleteTopic(new TopicRequest(sensor.getBroker().getBrokerId(), t.getTopic()));
+        }
     }
 
     @Override

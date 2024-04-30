@@ -1,5 +1,7 @@
 package live.smoothing.device.sensor.service.impl;
 
+import live.smoothing.device.adapter.RuleEngineAdapter;
+import live.smoothing.device.sensor.dto.TopicRequest;
 import live.smoothing.device.sensor.dto.TopicAddRequest;
 import live.smoothing.device.sensor.dto.TopicListResponse;
 import live.smoothing.device.sensor.dto.TopicTypeListResponse;
@@ -10,7 +12,6 @@ import live.smoothing.device.sensor.exception.TopicAlreadyExistException;
 import live.smoothing.device.sensor.exception.SensorNotFoundException;
 import live.smoothing.device.sensor.exception.TopicNotFoundException;
 import live.smoothing.device.sensor.exception.TopicTypeNotExistException;
-import live.smoothing.device.mq.producer.SensorMQ;
 import live.smoothing.device.sensor.repository.SensorRepository;
 import live.smoothing.device.sensor.repository.TopicRepository;
 import live.smoothing.device.sensor.repository.TopicTypeRepository;
@@ -26,7 +27,7 @@ public class TopicServiceImpl implements TopicService {
     private final TopicRepository topicRepository;
     private final TopicTypeRepository topicTypeRepository;
     private final SensorRepository sensorRepository;
-    private final SensorMQ sensorMQ;
+    private final RuleEngineAdapter ruleEngineAdapter;
 
     @Override
     @Transactional
@@ -41,8 +42,10 @@ public class TopicServiceImpl implements TopicService {
                 .topicType(topicType)
                 .sensor(sensorRepository.getReferenceById(topicAddRequest.getSensorId()))
                 .build();
-        topicRepository.save(topic);
-        sensorMQ.saveTopic(topicAddRequest.getSensorId(), topicAddRequest.getTopic());
+
+        topic = topicRepository.save(topic);
+
+        ruleEngineAdapter.addTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
     }
 
     @Override
@@ -66,18 +69,20 @@ public class TopicServiceImpl implements TopicService {
 
         topic.updateTopic(topicUpdateRequest.getTopic());
         topic.updateTopicType(topicType);
-        topicRepository.save(topic);
+        topic = topicRepository.save(topic);
 
-        sensorMQ.deleteTopic(topic.getSensor().getSensorId(), oldTopic);
-        sensorMQ.saveTopic(topic.getSensor().getSensorId(), topic.getTopic());
+        ruleEngineAdapter.deleteTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), oldTopic));
+        ruleEngineAdapter.addTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
     }
 
     @Override
+    @Transactional
     public void deleteTopic(Integer topicId) {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new TopicNotFoundException());
         topicRepository.delete(topic);
-        sensorMQ.deleteTopic(topic.getSensor().getSensorId(), topic.getTopic());
+
+        ruleEngineAdapter.deleteTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
     }
 
     @Override

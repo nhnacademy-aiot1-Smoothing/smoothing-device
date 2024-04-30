@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -16,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "sensors")
+@NamedEntityGraph(name = "Sensor.topics", attributeNodes = @NamedAttributeNode("topics"))
 public class Sensor {
 
     @Id
@@ -23,7 +25,7 @@ public class Sensor {
     @Column(name = "sensor_id")
     private Integer sensorId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "broker_id")
     private Broker broker;
 
@@ -38,7 +40,10 @@ public class Sensor {
     private SensorType sensorType;
 
     @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Topic> topics;
+    private Set<Topic> topics;
+
+    @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SensorTag> sensorTags;
 
     public void updateSensorType(SensorType sensorType) {
         this.sensorType = sensorType;

@@ -1,5 +1,6 @@
 package live.smoothing.device.broker.service.impl;
 
+import live.smoothing.device.adapter.RuleEngineAdapter;
 import live.smoothing.device.broker.dto.*;
 import live.smoothing.device.broker.entity.Broker;
 import live.smoothing.device.broker.entity.BrokerErrorLog;
@@ -12,8 +13,7 @@ import live.smoothing.device.broker.repository.BrokerRepository;
 import live.smoothing.device.broker.repository.ProtocolTypeRepository;
 import live.smoothing.device.broker.service.BrokerService;
 import live.smoothing.device.mq.dto.BrokerErrorRequest;
-import live.smoothing.device.mq.producer.BrokerRabbit;
-import live.smoothing.device.mq.producer.SensorRabbit;
+import live.smoothing.device.sensor.dto.TopicRequest;
 import live.smoothing.device.sensor.entity.Topic;
 import live.smoothing.device.sensor.repository.TopicRepository;
 import lombok.AllArgsConstructor;
@@ -32,22 +32,21 @@ public class BrokerServiceImpl implements BrokerService {
     private final TopicRepository topicRepository;
     private final ProtocolTypeRepository protocolTypeRepository;
     private final BrokerErrorLogRepository brokerErrorLogRepository;
-    private final BrokerRabbit brokerRabbit;
-    private final SensorRabbit sensorRabbit;
+    private final RuleEngineAdapter ruleEngineAdapter;
 
     @Override
-    public List<BrokerInitResponse> getInitBrokers() {
+    public List<RuleEngineResponse> getInitBrokers() {
         List<Broker> brokers = brokerRepository.getAllWith();
-        List<BrokerInitResponse> responses = new LinkedList<>();
+        List<RuleEngineResponse> responses = new LinkedList<>();
         for (Broker broker : brokers) {
-            responses.add(BrokerInitResponse.builder()
+            responses.add(RuleEngineResponse.builder()
                     .brokerId(broker.getBrokerId())
                     .brokerIp(broker.getBrokerIp())
                     .brokerPort(broker.getBrokerPort())
                     .protocolType(broker.getProtocolType().getProtocolType())
                     .topics(broker.getSensors().stream().flatMap(sensor -> sensor.getTopics().stream())
                             .map(Topic::getTopic)
-                            .collect(Collectors.toList()))
+                            .collect(Collectors.toSet()))
                     .build());
         }
         return responses;
@@ -65,8 +64,14 @@ public class BrokerServiceImpl implements BrokerService {
                 .brokerPort(request.getBrokerPort())
                 .protocolType(protocolType)
                 .build();
-        brokerRepository.save(broker);
-        brokerRabbit.saveBroker(broker.getBrokerIp(), broker.getBrokerPort(), broker.getBrokerId(), protocolType.getProtocolType());
+        broker = brokerRepository.save(broker);
+
+        ruleEngineAdapter.addBroker(BrokerRequest.builder()
+                .brokerId(broker.getBrokerId())
+                .brokerIp(broker.getBrokerIp())
+                .brokerPort(broker.getBrokerPort())
+                .protocolType(protocolType.getProtocolType())
+                .build());
     }
 
     @Override
@@ -86,12 +91,18 @@ public class BrokerServiceImpl implements BrokerService {
         broker.updateBrokerPort(brokerUpdateRequest.getBrokerPort());
         broker.updateBrokerName(brokerUpdateRequest.getBrokerName());
         broker.updateProtocolType(protocolType);
-        brokerRepository.save(broker);
-        brokerRabbit.deleteBroker(brokerId);
+        broker = brokerRepository.save(broker);
+
+        ruleEngineAdapter.deleteBroker(brokerId);
+        ruleEngineAdapter.addBroker(BrokerRequest.builder()
+                .brokerId(broker.getBrokerId())
+                .brokerIp(broker.getBrokerIp())
+                .brokerPort(broker.getBrokerPort())
+                .protocolType(protocolType.getProtocolType())
+                .build());
         List<Topic> topics = topicRepository.getTopicBySensorBrokerBrokerId(brokerId);
-        brokerRabbit.saveBroker(broker.getBrokerIp(), broker.getBrokerPort(), broker.getBrokerId(), protocolType.getProtocolType());
         for(Topic topic : topics) {
-            sensorRabbit.saveTopic(broker.getBrokerId(), topic.getTopic());
+            ruleEngineAdapter.addTopic(new TopicRequest(brokerId, topic.getTopic()));
         }
     }
 
@@ -100,7 +111,7 @@ public class BrokerServiceImpl implements BrokerService {
         Broker broker = brokerRepository.findById(brokerId)
                 .orElseThrow(BrokerNotFoundException::new);
         brokerRepository.delete(broker);
-        brokerRabbit.deleteBroker(brokerId);
+        ruleEngineAdapter.deleteBroker(brokerId);
     }
 
     @Override
