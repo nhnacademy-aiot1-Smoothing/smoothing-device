@@ -21,6 +21,8 @@ import live.smoothing.device.sensor.repository.TopicRepository;
 import live.smoothing.device.sensor.service.SensorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -59,12 +61,12 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public SensorListResponse getSensors(Integer brokerId) {
+    public SensorListResponse getSensors(Integer brokerId, Pageable pageable) {
         if(!brokerRepository.existsById(brokerId)) {
             throw new BrokerNotFoundException();
         }
-        List<SensorResponse> sensorResponses = sensorRepository.findByBrokerBrokerId(brokerId);
-        return new SensorListResponse(sensorResponses);
+        Page<SensorResponse> sensorResponses = sensorRepository.findByBrokerBrokerId(brokerId, pageable);
+        return new SensorListResponse(sensorResponses.getContent());
     }
 
     @Override
@@ -93,8 +95,9 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public SensorErrorListResponse getSensorErrors() {
-        return new SensorErrorListResponse(sensorErrorLogRepository.findAllSensorErrorLogs());
+    public SensorErrorListResponse getSensorErrors(Pageable pageable) {
+        Page<SensorErrorResponse> sensorErrorResponses = sensorErrorLogRepository.findAllSensorErrorLogs(pageable);
+        return new SensorErrorListResponse(sensorErrorResponses.getContent());
     }
 
     @Override

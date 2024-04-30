@@ -1,10 +1,7 @@
 package live.smoothing.device.sensor.entity;
 
 import live.smoothing.device.broker.entity.Broker;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -39,10 +36,10 @@ public class Sensor {
     @JoinColumn(name = "sensor_type")
     private SensorType sensorType;
 
-    @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sensor", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<Topic> topics;
 
-    @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sensor", fetch = FetchType.LAZY)
     private List<SensorTag> sensorTags;
 
     public void updateSensorType(SensorType sensorType) {

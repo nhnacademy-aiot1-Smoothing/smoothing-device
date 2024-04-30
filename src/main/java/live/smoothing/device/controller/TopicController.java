@@ -4,6 +4,7 @@ import live.smoothing.device.sensor.dto.*;
 import live.smoothing.device.sensor.service.TagService;
 import live.smoothing.device.sensor.service.TopicService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +25,14 @@ public class TopicController {
     }
 
     @GetMapping("/{sensorId}")
-    public ResponseEntity<TopicListResponse> getTopics(@PathVariable("sensorId") Integer sensorId) {
-        return ResponseEntity.ok(topicService.getTopics(sensorId));
+    public ResponseEntity<TopicListResponse> getTopics(@PathVariable("sensorId") Integer sensorId,
+                                                       Pageable pageable) {
+        return ResponseEntity.ok(topicService.getTopics(sensorId, pageable));
     }
 
     @PutMapping("/{topicId}")
-    public ResponseEntity<Void> updateTopic(@PathVariable("topicId") Integer topicId, @RequestBody TopicUpdateRequest topicUpdateRequest) {
+    public ResponseEntity<Void> updateTopic(@PathVariable("topicId") Integer topicId,
+                                            @RequestBody TopicUpdateRequest topicUpdateRequest) {
         topicService.updateTopic(topicId, topicUpdateRequest);
         return ResponseEntity.ok().build();
     }
@@ -47,7 +50,6 @@ public class TopicController {
 
     @GetMapping
     public ResponseEntity<TagTopicResponse> getTagTopics(@RequestParam("userId") String userId, @RequestParam("tags") List<String> tags) {
-        System.out.println(tags);
         return ResponseEntity.ok(tagService.getTagTopics(userId, tags));
     }
 }

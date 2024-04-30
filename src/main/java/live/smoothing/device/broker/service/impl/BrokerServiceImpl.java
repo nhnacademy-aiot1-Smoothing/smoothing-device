@@ -17,6 +17,8 @@ import live.smoothing.device.sensor.dto.TopicRequest;
 import live.smoothing.device.sensor.entity.Topic;
 import live.smoothing.device.sensor.repository.TopicRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -24,6 +26,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 브로커 서비스
+ * @see BrokerService 구현체
+ *
+ * @author 우혜승
+ */
 @AllArgsConstructor
 @Service("brokerService")
 public class BrokerServiceImpl implements BrokerService {
@@ -34,6 +42,9 @@ public class BrokerServiceImpl implements BrokerService {
     private final BrokerErrorLogRepository brokerErrorLogRepository;
     private final RuleEngineAdapter ruleEngineAdapter;
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<RuleEngineResponse> getInitBrokers() {
         List<Broker> brokers = brokerRepository.getAllWith();
@@ -52,6 +63,9 @@ public class BrokerServiceImpl implements BrokerService {
         return responses;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @Transactional
     public void addBroker(BrokerAddRequest request) {
@@ -66,7 +80,7 @@ public class BrokerServiceImpl implements BrokerService {
                 .build();
         broker = brokerRepository.save(broker);
 
-        ruleEngineAdapter.addBroker(BrokerRequest.builder()
+        ruleEngineAdapter.addBroker(BrokerGenerateRequest.builder()
                 .brokerId(broker.getBrokerId())
                 .brokerIp(broker.getBrokerIp())
                 .brokerPort(broker.getBrokerPort())
@@ -74,11 +88,18 @@ public class BrokerServiceImpl implements BrokerService {
                 .build());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public BrokerListResponse getBrokers() {
-        return new BrokerListResponse(brokerRepository.getBrokers());
+    public BrokerListResponse getBrokers(Pageable pageable) {
+        Page<BrokerResponse> brokers = brokerRepository.getBrokers(pageable);
+        return new BrokerListResponse(brokers.getContent());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @Transactional
     public void updateBroker(Integer brokerId, BrokerUpdateRequest brokerUpdateRequest) {
@@ -94,7 +115,7 @@ public class BrokerServiceImpl implements BrokerService {
         broker = brokerRepository.save(broker);
 
         ruleEngineAdapter.deleteBroker(brokerId);
-        ruleEngineAdapter.addBroker(BrokerRequest.builder()
+        ruleEngineAdapter.addBroker(BrokerGenerateRequest.builder()
                 .brokerId(broker.getBrokerId())
                 .brokerIp(broker.getBrokerIp())
                 .brokerPort(broker.getBrokerPort())
@@ -106,6 +127,9 @@ public class BrokerServiceImpl implements BrokerService {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void deleteBroker(Integer brokerId) {
         Broker broker = brokerRepository.findById(brokerId)
@@ -114,11 +138,18 @@ public class BrokerServiceImpl implements BrokerService {
         ruleEngineAdapter.deleteBroker(brokerId);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public BrokerErrorListResponse getErrors() {
-        return new BrokerErrorListResponse(brokerErrorLogRepository.getAllErrors());
+    public BrokerErrorListResponse getErrors(Pageable pageable) {
+        Page<BrokerErrorResponse> errors = brokerErrorLogRepository.getAllErrors(pageable);
+        return new BrokerErrorListResponse(errors.getContent());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void deleteError(Integer brokerErrorId) {
         BrokerErrorLog brokerErrorLog = brokerErrorLogRepository.findById(brokerErrorId)
@@ -126,6 +157,9 @@ public class BrokerServiceImpl implements BrokerService {
         brokerErrorLogRepository.delete(brokerErrorLog);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void addBrokerError(BrokerErrorRequest request) {
         BrokerErrorLog brokerErrorLog = BrokerErrorLog.builder()

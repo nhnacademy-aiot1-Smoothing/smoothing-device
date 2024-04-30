@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * 브로커 에러 로그 엔티티\
+ *
+ * @author 우혜승
+ */
 @Getter
 @Entity
 @Builder

@@ -17,6 +17,6 @@ public class SensorResponse {
         this.sensorId = sensorId;
         this.sensorType = sensorType.getSensorType();
         this.sensorName = sensorName;
-        this.sensorRegisteredAt = sensorRegisteredAt.toString();
+        this.sensorRegisteredAt = sensorRegisteredAt == null ? null : sensorRegisteredAt.toString();
     }
 }

@@ -114,12 +114,12 @@ insert into protocol_types values ('MQTT');
 insert into brokers values (1, '133.186.153.19', 1883, 'NHN Academy', 'MQTT');
 
 insert into sensors values (1, 1, '에어컨',null,'전기');
-insert into topics values (null, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/air_conditioner/ph/total/de/w',null,1,'전력');
-insert into topics values (null, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/air_conditioner/ph/kwh/de/sum',null,1,'전력량');
+insert into topics values (1, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/air_conditioner/ph/total/de/w',null,1,'전력');
+insert into topics values (2, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/air_conditioner/ph/kwh/de/sum',null,1,'전력량');
 
 insert into sensors values (2, 1, '복사기',null,'전기');
-insert into topics values (null, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/office_copier/ph/total/de/w',null,2,'전력');
-insert into topics values (null, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/office_copier/ph/kwh/de/sum',null,2,'전력량');
+insert into topics values (3, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/office_copier/ph/total/de/w',null,2,'전력');
+insert into topics values (4, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/office_copier/ph/kwh/de/sum',null,2,'전력량');
 
 insert into users values ('haha', '1234', 'admin', 'test@gmail.com', 'ACTIVE', null);
 insert into tags values (1, 'haha', 'NHN');
@@ -127,3 +127,6 @@ insert into tags values (2, 'haha', 'Office');
 insert into sensor_tags values (1, 1, 1);
 insert into sensor_tags values (2, 2, 2);
 insert into sensor_tags values (3, 1, 2);
+
+insert into broker_error_logs values (1, 1, 'BROKER_ERROR', now(), null);
+insert into sensor_error_logs values (1, 'SENSOR_ERROR', now(), 0.0, 1, 1);

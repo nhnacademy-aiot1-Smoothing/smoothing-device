@@ -5,6 +5,11 @@ import lombok.Getter;
 
 import java.util.List;
 
+/**
+ * 브로커 에러 목록 응답
+ *
+ * @author 우혜승
+ */
 @Getter
 @AllArgsConstructor
 public class BrokerErrorListResponse {

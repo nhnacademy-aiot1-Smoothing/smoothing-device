@@ -3,6 +3,7 @@ package live.smoothing.device.controller;
 import live.smoothing.device.sensor.dto.*;
 import live.smoothing.device.sensor.service.SensorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +21,9 @@ public class SensorController {
     }
 
     @GetMapping("/{brokerId}")
-    public ResponseEntity<SensorListResponse> getSensor(@PathVariable("brokerId") Integer brokerId) {
-        return ResponseEntity.ok(sensorService.getSensors(brokerId));
+    public ResponseEntity<SensorListResponse> getSensor(@PathVariable("brokerId") Integer brokerId,
+                                                        Pageable pageable) {
+        return ResponseEntity.ok(sensorService.getSensors(brokerId, pageable));
     }
 
     @PutMapping("/{sensorId}")
@@ -38,8 +40,8 @@ public class SensorController {
     }
 
     @GetMapping("/errors")
-    public ResponseEntity<SensorErrorListResponse> getErrors() {
-        return ResponseEntity.ok(sensorService.getSensorErrors());
+    public ResponseEntity<SensorErrorListResponse> getErrors(Pageable pageable) {
+        return ResponseEntity.ok(sensorService.getSensorErrors(pageable));
     }
 
     @DeleteMapping("/errors/{sensorErrorId}")

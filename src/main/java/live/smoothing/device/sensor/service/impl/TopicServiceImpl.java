@@ -1,11 +1,7 @@
 package live.smoothing.device.sensor.service.impl;
 
 import live.smoothing.device.adapter.RuleEngineAdapter;
-import live.smoothing.device.sensor.dto.TopicRequest;
-import live.smoothing.device.sensor.dto.TopicAddRequest;
-import live.smoothing.device.sensor.dto.TopicListResponse;
-import live.smoothing.device.sensor.dto.TopicTypeListResponse;
-import live.smoothing.device.sensor.dto.TopicUpdateRequest;
+import live.smoothing.device.sensor.dto.*;
 import live.smoothing.device.sensor.entity.Topic;
 import live.smoothing.device.sensor.entity.TopicType;
 import live.smoothing.device.sensor.exception.TopicAlreadyExistException;
@@ -17,6 +13,8 @@ import live.smoothing.device.sensor.repository.TopicRepository;
 import live.smoothing.device.sensor.repository.TopicTypeRepository;
 import live.smoothing.device.sensor.service.TopicService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -49,11 +47,12 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public TopicListResponse getTopics(Integer sensorId) {
+    public TopicListResponse getTopics(Integer sensorId, Pageable pageable) {
         if(sensorRepository.findById(sensorId).isEmpty()) {
             throw new SensorNotFoundException();
         }
-        return new TopicListResponse(topicRepository.getAllTopics(sensorId));
+        Page<TopicResponse> topicResponses = topicRepository.getAllTopics(sensorId, pageable);
+        return new TopicListResponse(topicResponses.getContent());
     }
 
     @Override

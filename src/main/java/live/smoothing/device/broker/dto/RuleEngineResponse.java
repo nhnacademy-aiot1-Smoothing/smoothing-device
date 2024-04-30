@@ -4,6 +4,11 @@ import lombok.*;
 
 import java.util.Set;
 
+/**
+ * Rule Engine 초기화용 응답
+ *
+ * @Author 우혜승
+ */
 @Getter
 @Setter
 @Builder
