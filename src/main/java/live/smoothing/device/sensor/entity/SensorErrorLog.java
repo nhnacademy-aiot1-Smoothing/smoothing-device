@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * 센서 에러 로그 엔티티 클래스
+ *
+ * @author 우혜승
+ */
 @Getter
 @Entity
 @Builder

@@ -10,6 +10,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * 토픽 타입 엔티티 클래스
+ *
+ * @author 우혜승
+ */
 @Getter
 @Entity
 @Table(name = "topic_types")

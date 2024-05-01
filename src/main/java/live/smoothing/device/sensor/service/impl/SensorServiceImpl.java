@@ -27,9 +27,14 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
+/**
+ * SensorService 구현체<br>
+ * 센서와 관련된 비즈니스 로직을 처리한다.
+ *
+ * @author 우혜승
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service("sensorService")
@@ -42,6 +47,9 @@ public class SensorServiceImpl implements SensorService {
     private final TopicRepository topicRepository;
     private final RuleEngineAdapter ruleEngineAdapter;
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @Transactional
     public void saveSensor(SensorRegisterRequest sensorRegisterRequest) {
@@ -60,6 +68,9 @@ public class SensorServiceImpl implements SensorService {
         sensorRepository.save(sensor);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public SensorListResponse getSensors(Integer brokerId, Pageable pageable) {
         if(!brokerRepository.existsById(brokerId)) {
@@ -69,6 +80,9 @@ public class SensorServiceImpl implements SensorService {
         return new SensorListResponse(sensorResponses.getContent());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @Transactional
     public void updateSensor(Integer sensorId, SensorUpdateRequest sensorUpdateRequest) {
@@ -83,6 +97,9 @@ public class SensorServiceImpl implements SensorService {
         sensorRepository.save(sensor);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void deleteSensor(Integer sensorId) {
         Sensor sensor = sensorRepository.findSensorWithTopicBySensorId(sensorId)
@@ -94,12 +111,18 @@ public class SensorServiceImpl implements SensorService {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public SensorErrorListResponse getSensorErrors(Pageable pageable) {
         Page<SensorErrorResponse> sensorErrorResponses = sensorErrorLogRepository.findAllSensorErrorLogs(pageable);
         return new SensorErrorListResponse(sensorErrorResponses.getContent());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void deleteSensorError(Integer sensorErrorId) {
         SensorErrorLog sensorErrorLog = sensorErrorLogRepository.findById(sensorErrorId)
@@ -107,11 +130,17 @@ public class SensorServiceImpl implements SensorService {
         sensorErrorLogRepository.delete(sensorErrorLog);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public SensorTypeListResponse getSensorTypes() {
         return new SensorTypeListResponse(sensorTypeRepository.getAllSensorType());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void addSensorError(SensorErrorRequest request) {
         Optional<Sensor> sensor = sensorRepository.findById(request.getSensorId());

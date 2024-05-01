@@ -1,6 +1,7 @@
 package live.smoothing.device.sensor.service.impl;
 
 import live.smoothing.device.adapter.RuleEngineAdapter;
+import live.smoothing.device.sensor.dto.TopicResponseListResponse;
 import live.smoothing.device.sensor.dto.*;
 import live.smoothing.device.sensor.entity.Topic;
 import live.smoothing.device.sensor.entity.TopicType;
@@ -18,7 +19,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.stream.Collectors;
 
+/**
+ * 토픽 서비스 구현체<br>
+ * 토픽과 관련된 비즈니스 로직을 처리한다.
+ *
+ * @author 우혜승
+ */
 @Service("topicService")
 @RequiredArgsConstructor
 public class TopicServiceImpl implements TopicService {
@@ -27,6 +35,9 @@ public class TopicServiceImpl implements TopicService {
     private final SensorRepository sensorRepository;
     private final RuleEngineAdapter ruleEngineAdapter;
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @Transactional
     public void saveTopic(TopicAddRequest topicAddRequest) {
@@ -46,15 +57,21 @@ public class TopicServiceImpl implements TopicService {
         ruleEngineAdapter.addTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public TopicListResponse getTopics(Integer sensorId, Pageable pageable) {
+    public TopicResponseListResponse getTopics(Integer sensorId, Pageable pageable) {
         if(sensorRepository.findById(sensorId).isEmpty()) {
             throw new SensorNotFoundException();
         }
         Page<TopicResponse> topicResponses = topicRepository.getAllTopics(sensorId, pageable);
-        return new TopicListResponse(topicResponses.getContent());
+        return new TopicResponseListResponse(topicResponses.getContent());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @Transactional
     public void updateTopic(Integer topicId, TopicUpdateRequest topicUpdateRequest) {
@@ -74,6 +91,9 @@ public class TopicServiceImpl implements TopicService {
         ruleEngineAdapter.addTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @Transactional
     public void deleteTopic(Integer topicId) {
@@ -84,8 +104,19 @@ public class TopicServiceImpl implements TopicService {
         ruleEngineAdapter.deleteTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public TopicTypeListResponse getTopicTypes() {
         return new TopicTypeListResponse(topicTypeRepository.getAllTopicTypes());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public TopicListResponse getAllTopics() {
+        return new TopicListResponse(topicRepository.findAll().stream().map(Topic::getTopic).collect(Collectors.toList()));
     }
 }

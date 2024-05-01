@@ -17,12 +17,8 @@ import java.util.Set;
 public class RuleEngineResponse {
 
     private Integer brokerId;
-
     private String brokerIp;
-
     private Integer brokerPort;
-
     private String protocolType;
-
     private Set<String> topics;
 }

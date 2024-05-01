@@ -37,4 +37,12 @@ public interface BrokerRepository extends JpaRepository<Broker, Integer> {
     @Query("SELECT new live.smoothing.device.broker.dto.BrokerResponse(b.brokerId, b.brokerIp, b.brokerPort, b.brokerName, b.protocolType.protocolType) FROM Broker b ")
     Page<BrokerResponse> getBrokers(Pageable pageable);
 
+    /**
+     * 브로커 아이피와 포트로 브로커 존재 여부 확인
+     * @param brokerIp 브로커 아이피
+     * @param brokerPort 브로커 포트
+     * @return 브로커 존재 여부
+     */
+    boolean existsByBrokerIpAndBrokerPort(String brokerIp, int brokerPort);
+
 }

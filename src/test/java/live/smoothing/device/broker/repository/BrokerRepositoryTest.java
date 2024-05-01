@@ -11,6 +11,7 @@ import live.smoothing.device.sensor.repository.SensorRepository;
 import live.smoothing.device.sensor.repository.SensorTypeRepository;
 import live.smoothing.device.sensor.repository.TopicRepository;
 import live.smoothing.device.sensor.repository.TopicTypeRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -75,7 +77,6 @@ class BrokerRepositoryTest {
                 .broker(broker)
                 .sensorName("testSensor")
                 .sensorRegisteredAt(LocalDateTime.now())
-                .topics(null)
                 .sensorType(sensorType)
                 .build();
         topic = Topic.builder()
@@ -85,13 +86,19 @@ class BrokerRepositoryTest {
                 .build();
     }
 
+    @AfterEach
+    void tearDown() {
+        brokerRepository.deleteAll();
+        sensorRepository.deleteAll();
+        topicRepository.deleteAll();
+    }
+
     @Test
     void save(){
-        brokerRepository.save(broker);
-        Optional<Broker> savedBroker = brokerRepository.findById(1);
+        Broker save = brokerRepository.save(broker);
 
-        Assertions.assertTrue(savedBroker.isPresent());
-        assertEquals(broker.getBrokerName(), savedBroker.get().getBrokerName());
+        Assertions.assertNotNull(save);
+        assertEquals(broker.getBrokerName(), save.getBrokerName());
     }
 
     @Test

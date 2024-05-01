@@ -6,13 +6,12 @@ import lombok.Getter;
 import java.util.List;
 
 /**
- * 토픽 타입 목록 응답 클래스
+ * 토픽 목록 응답 클래스
  *
  * @author 우혜승
  */
 @Getter
 @AllArgsConstructor
-public class TopicTypeListResponse {
-
-    private final List<TopicTypeResponse> topicTypes;
+public class TopicResponseListResponse {
+    private List<TopicResponse> topics;
 }

@@ -113,13 +113,46 @@ insert into protocol_types values ('MQTT');
 
 insert into brokers values (1, '133.186.153.19', 1883, 'NHN Academy', 'MQTT');
 
-insert into sensors values (1, 1, '에어컨',null,'전기');
+insert into sensors values (1, 1, 'Office/에어컨',null,'전기');
 insert into topics values (1, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/air_conditioner/ph/total/de/w',null,1,'전력');
 insert into topics values (2, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/air_conditioner/ph/kwh/de/sum',null,1,'전력량');
 
-insert into sensors values (2, 1, '복사기',null,'전기');
+insert into sensors values (2, 1, 'Office/복사기',null,'전기');
 insert into topics values (3, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/office_copier/ph/total/de/w',null,2,'전력');
 insert into topics values (4, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/office_copier/ph/kwh/de/sum',null,2,'전력량');
+
+insert into sensors values (3, 1, 'Office/A프로젝트',null,'전기');
+insert into topics values (5, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/a_project/ph/kwh/de/sum',null,3,'전력량');
+
+insert into sensors values (4, 1, 'Office/AC',null,'전기');
+insert into topics values (15, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/ac/ph/kwh/de/sum',null,4,'전력량');
+
+insert into sensors values (5, 1, 'Office/에어컨_실내기',null,'전기');
+insert into topics values (6, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/ac_indoor_unit/ph/kwh/de/sum',null,5,'전력량');
+
+insert into sensors values (6, 1, 'Class_A/에어컨_실외기',null,'전기');
+insert into topics values (7, 'data/s/nhnacademy/b/gyeongnam/p/class_a/d/gems-3500/e/electrical_energy/t/ac_outdoor_unit/ph/kwh/de/sum',null,6,'전력량');
+
+insert into sensors values (7, 1, 'Office/에어컨_실외기',null,'전기');
+insert into topics values (8, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/ac_outdoor_unit/ph/kwh/de/sum',null,7,'전력량');
+
+insert into sensors values (8, 1, 'Office/에어컨',null,'전기');
+insert into topics values (9, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/air_conditioner/ph/kwh/de/sum',null,8,'전력량');
+
+insert into sensors values (9, 1, 'Class_A/자동문',null,'전기');
+insert into topics values (10, 'data/s/nhnacademy/b/gyeongnam/p/class_a/d/gems-3500/e/electrical_energy/t/automatic_door/ph/kwh/de/sum',null,9,'전력량');
+
+insert into sensors values (10, 1, 'Office/자동문',null,'전기');
+insert into topics values (11, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/automatic_door/ph/kwh/de/sum',null,10,'전력량');
+
+insert into sensors values (11, 1, 'Office/B프로젝트',null,'전기');
+insert into topics values (12, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/b_project/ph/kwh/de/sum',null,11,'전력량');
+
+insert into sensors values (12, 1, 'Office/barton_heating_window',null,'전기');
+insert into topics values (13, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/barton_heating_window/ph/kwh/de/sum',null,12,'전력량');
+
+insert into sensors values (13, 1, 'Office/빌트인히터',null,'전기');
+insert into topics values (14, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/built_in_heating/ph/kwh/de/sum',null,13,'전력량');
 
 insert into users values ('haha', '1234', 'admin', 'test@gmail.com', 'ACTIVE', null);
 insert into tags values (1, 'haha', 'NHN');

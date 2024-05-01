@@ -4,6 +4,11 @@ import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * 센서 태그 엔티티 클래스
+ *
+ * @author 우혜승
+ */
 @Entity
 @Getter
 @Builder

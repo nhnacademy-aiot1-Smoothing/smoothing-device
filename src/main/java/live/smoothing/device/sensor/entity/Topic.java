@@ -5,6 +5,11 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * 토픽 엔티티 클래스
+ *
+ * @author 우혜승
+ */
 @Getter
 @Entity
 @Builder
@@ -32,10 +37,18 @@ public class Topic {
     @JoinColumn(name = "topic_type")
     private TopicType topicType;
 
+    /**
+     * 토픽 정보를 수정
+     * @param topic 수정할 토픽
+     */
     public void updateTopic(String topic) {
         this.topic = topic;
     }
 
+    /**
+     * 토픽 타입을 수정
+     * @param topicType 수정할 토픽 타입
+     */
     public void updateTopicType(TopicType topicType) {
         this.topicType = topicType;
     }
