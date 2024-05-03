@@ -7,6 +7,8 @@ import live.smoothing.device.broker.repository.ProtocolTypeRepository;
 import live.smoothing.device.sensor.dto.SensorResponse;
 import live.smoothing.device.sensor.entity.Sensor;
 import live.smoothing.device.sensor.entity.SensorType;
+import live.smoothing.device.sensor.entity.Topic;
+import live.smoothing.device.sensor.entity.TopicType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,6 +39,15 @@ class SensorRepositoryTest {
     @Autowired
     private ProtocolTypeRepository protocolTypeRepository;
 
+    @Autowired
+    private TopicRepository topicRepository;
+
+    @Autowired
+    private TopicTypeRepository topicTypeRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     private ProtocolType protocolType = new ProtocolType("testProtocolType");
 
     private Broker broker = Broker.builder()
@@ -52,11 +65,21 @@ class SensorRepositoryTest {
             .broker(broker)
             .build();
 
+    private TopicType topicType = new TopicType("testTopicType");
+
+    private Topic topic = Topic.builder()
+            .topic("testTopic")
+            .topicType(topicType)
+            .sensor(sensor)
+            .build();
+
     @BeforeEach
     void setUp() {
         protocolTypeRepository.save(protocolType);
         brokerRepository.save(broker);
         sensorTypeRepository.save(sensorType);
+        topicTypeRepository.save(topicType);
+        topicRepository.save(topic);
     }
 
     @Test
@@ -79,6 +102,9 @@ class SensorRepositoryTest {
     @Test
     void findSensorWithTopicBySensorId() {
         Sensor saved = sensorRepository.save(sensor);
+
+        entityManager.flush();
+        entityManager.clear();
 
         Optional<Sensor> found = sensorRepository.findSensorWithTopicBySensorId(saved.getSensorId());
 

@@ -92,17 +92,31 @@ public class TopicController {
      * @return 토픽 태그 리스트 응답 HTTP 상태코드
      */
     @GetMapping
-    public ResponseEntity<TopicListResponse> getTagTopics(@RequestParam("userId") String userId, @RequestParam("tags") List<String> tags) {
-        return ResponseEntity.ok(tagService.getTagTopics(userId, tags));
+    public ResponseEntity<TopicListResponse> getTopicsByTagsAndType(@RequestParam("userId") String userId,
+                                                                    @RequestParam("tags") List<String> tags,
+                                                                    @RequestParam("type") String type) {
+        return ResponseEntity.ok(tagService.getTagTopics(userId, tags, type));
     }
 
     /**
-     * 모든 토픽 조회 API
+     * 센서 타입에 대한 모든 토픽 조회 API
      *
      * @return 토픽 리스트 응답 HTTP 상태코드
      */
     @GetMapping("/all")
-    public ResponseEntity<TopicListResponse> getAllTopics(){
-        return ResponseEntity.ok(topicService.getAllTopics());
+    public ResponseEntity<TopicListResponse> getAllTopicsByType(@RequestParam("type") String type){
+        return ResponseEntity.ok(topicService.getAllTopics(type));
+    }
+
+    /**
+     * 태그와 센서 타입에 대한 센서와 토픽 조회 API
+     *
+     * @return 센서와 토픽 리스트 응답 HTTP 상태코드
+     */
+    @GetMapping("/sensors")
+    public ResponseEntity<SensorTopicResponse> getSensorWithTopics(@RequestParam("userId") String userId,
+                                                                   @RequestParam("tags") List<String> tags,
+                                                                   @RequestParam("type") String type) {
+        return ResponseEntity.ok(tagService.getSensorWithTopics(userId ,tags, type));
     }
 }

@@ -1,7 +1,7 @@
 package live.smoothing.device.sensor.service.impl;
 
+import live.smoothing.device.sensor.dto.SensorTopicResponse;
 import live.smoothing.device.sensor.dto.TopicListResponse;
-import live.smoothing.device.sensor.repository.SensorTagRepository;
 import live.smoothing.device.sensor.repository.TagRepository;
 import live.smoothing.device.sensor.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +19,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
-    private final SensorTagRepository sensorTagRepository;
 
     /**
      * @inheritDoc
      */
     @Override
-    public TopicListResponse getTagTopics(String userId, List<String> tags) {
-        return new TopicListResponse(tagRepository.getTopicsByUserIdAndTags(userId, tags, (long) tags.size()));
+    public TopicListResponse getTagTopics(String userId ,List<String> tags, String type) {
+        return new TopicListResponse(tagRepository.getTopicsByUserIdAndTags(userId ,tags, (long) tags.size(), type));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public SensorTopicResponse getSensorWithTopics(String userId ,List<String> tags, String type) {
+        return new SensorTopicResponse(tagRepository.getSensorTopicsByTagsAndType(userId ,tags, type, (long) tags.size()));
     }
 
 }

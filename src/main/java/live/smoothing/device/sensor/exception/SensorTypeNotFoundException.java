@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
  *
  * @author 우혜승
  */
-public class SensorTypeNoutFoundException extends CommonException {
-    public SensorTypeNoutFoundException() {
+public class SensorTypeNotFoundException extends CommonException {
+    public SensorTypeNotFoundException() {
         super(HttpStatus.NOT_FOUND, "센서 타입을 찾을 수 없습니다.");
     }
 }

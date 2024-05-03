@@ -51,8 +51,8 @@ public interface TopicService {
     TopicTypeListResponse getTopicTypes();
 
     /**
-     * 모든 토픽 목록을 조회하는 메서드
+     * 센서 타입에 대한 모든 토픽 목록을 조회하는 메서드
      * @return 조회된 모든 토픽 목록을 담은 응답 DTO
      */
-    TopicListResponse getAllTopics();
+    TopicListResponse getAllTopics(String type);
 }

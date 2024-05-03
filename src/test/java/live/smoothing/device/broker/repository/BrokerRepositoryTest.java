@@ -22,11 +22,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @ActiveProfiles("dev")
@@ -49,6 +50,9 @@ class BrokerRepositoryTest {
 
     @Autowired
     private TopicRepository topicRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private ProtocolType protocolType = new ProtocolType("testProtocolType");
 
@@ -107,10 +111,14 @@ class BrokerRepositoryTest {
         sensorRepository.save(sensor);
         topicRepository.save(topic);
 
+        entityManager.flush();
+        entityManager.clear();
+
         List<Broker> brokers = brokerRepository.getAllWith();
         Assertions.assertAll(
                 ()-> assertEquals(1, brokers.size()),
-                ()-> assertEquals(broker.getBrokerName(), brokers.get(0).getBrokerName())
+                ()-> assertEquals(broker.getBrokerName(), brokers.get(0).getBrokerName()),
+                ()-> assertTrue(brokers.stream().anyMatch(broker -> broker.getSensors().stream().anyMatch(sensor -> sensor.getSensorName().equals(sensor.getSensorName()))))
         );
     }
 

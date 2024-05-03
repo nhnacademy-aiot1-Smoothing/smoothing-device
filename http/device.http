@@ -98,7 +98,10 @@ GET http://localhost:8005/api/device/brokers/errors
 DELETE http://localhost:8005/api/device/brokers/errors/1
 
 ### 태그 조회
-GET http://localhost:8005/api/device/topics?userId=haha&tags=NHN,Office
+GET http://localhost:8005/api/device/topics?tags=NHN,Office&type=전력량&userId=haha
 
 ### 모든 토픽 조회
-GET http://localhost:8005/api/device/topics/all
+GET http://localhost:8005/api/device/topics/all?type=전력량
+
+### 센서, 토픽 조회
+GET http://localhost:8005/api/device/topics/sensors?type=전력량&tags=NHN,Office&userId=haha

@@ -15,86 +15,86 @@ drop table if exists protocol_types;
 
 
 create table topic_types (
-    topic_type varchar(255) not null primary key
+                             topic_type varchar(255) not null primary key
 );
 
 create table sensor_types (
-    sensor_type varchar(255) not null primary key
+                              sensor_type varchar(255) not null primary key
 );
 
 create table protocol_types (
-    protocol_type varchar(255) not null primary key
+                                protocol_type varchar(255) not null primary key
 );
 
 create table brokers (
-    broker_id int primary key auto_increment,
-    broker_ip varchar(255) not null,
-    broker_port int not null,
-    broker_name varchar(255) not null,
-    protocol_type varchar(255) not null,
-    foreign key (protocol_type) references protocol_types(protocol_type)
+                         broker_id int primary key auto_increment,
+                         broker_ip varchar(255) not null,
+                         broker_port int not null,
+                         broker_name varchar(255) not null,
+                         protocol_type varchar(255) not null,
+                         foreign key (protocol_type) references protocol_types(protocol_type)
 );
 
 create table sensors (
-    sensor_id int primary key auto_increment,
-    broker_id int not null,
-    sensor_name varchar(255) not null,
-    sensor_registered_at date,
-    sensor_type varchar(255) not null,
-    foreign key (broker_id) references brokers(broker_id) on delete cascade
+                         sensor_id int primary key auto_increment,
+                         broker_id int not null,
+                         sensor_name varchar(255) not null,
+                         sensor_registered_at date,
+                         sensor_type varchar(255) not null,
+                         foreign key (broker_id) references brokers(broker_id) on delete cascade
 );
 
 create table topics (
-    topic_id int primary key auto_increment,
-    topic varchar(255),
-    topic_registered_at date,
-    sensor_id int not null,
-    topic_type varchar(255) not null,
-    foreign key (sensor_id) references sensors(sensor_id) on delete cascade
+                        topic_id int primary key auto_increment,
+                        topic varchar(255),
+                        topic_registered_at date,
+                        sensor_id int not null,
+                        topic_type varchar(255) not null,
+                        foreign key (sensor_id) references sensors(sensor_id) on delete cascade
 );
 
 create table users (
-    user_id varchar(255) primary key,
-    user_password varchar(255) not null,
-    user_name varchar(255) not null,
-    user_email varchar(255) not null,
-    user_state varchar(20) not null,
-    last_access date null
+                       user_id varchar(255) primary key,
+                       user_password varchar(255) not null,
+                       user_name varchar(255) not null,
+                       user_email varchar(255) not null,
+                       user_state varchar(20) not null,
+                       last_access date null
 );
 
 create table tags (
-      tag_id int primary key auto_increment,
-      user_id varchar(255) not null,
-      tag_name varchar(255) not null,
-      foreign key (user_id) references users(user_id) on delete cascade
+                      tag_id int primary key auto_increment,
+                      user_id varchar(255) not null,
+                      tag_name varchar(255) not null,
+                      foreign key (user_id) references users(user_id) on delete cascade
 );
 
 create table sensor_tags (
-    sensor_tag_id int primary key auto_increment,
-    tag_id int not null,
-    sensor_id int not null,
-    foreign key (tag_id) references tags(tag_id) on delete cascade,
-    foreign key (sensor_id) references sensors(sensor_id) on delete cascade
+                             sensor_tag_id int primary key auto_increment,
+                             tag_id int not null,
+                             sensor_id int not null,
+                             foreign key (tag_id) references tags(tag_id) on delete cascade,
+                             foreign key (sensor_id) references sensors(sensor_id) on delete cascade
 );
 
 create table sensor_error_logs (
-    sensor_error_log_id int primary key auto_increment,
-    sensor_error_type varchar(255) not null,
-    sensor_error_created_at datetime not null,
-    sensor_error_value double not null,
-    sensor_id int not null,
-    topic_id int,
-    foreign key (sensor_id) references sensors(sensor_id) on delete cascade,
-    foreign key (topic_id) references topics(topic_id) on delete cascade
+                                   sensor_error_log_id int primary key auto_increment,
+                                   sensor_error_type varchar(255) not null,
+                                   sensor_error_created_at datetime not null,
+                                   sensor_error_value double not null,
+                                   sensor_id int not null,
+                                   topic_id int,
+                                   foreign key (sensor_id) references sensors(sensor_id) on delete cascade,
+                                   foreign key (topic_id) references topics(topic_id) on delete cascade
 );
 
 create table broker_error_logs (
-    broker_error_log_id int primary key auto_increment,
-    broker_id int not null,
-    broker_error_type varchar(255) not null,
-    broker_error_created_at datetime not null,
-    broker_error_solved_at datetime,
-    foreign key (broker_id) references brokers(broker_id) on delete cascade
+                                   broker_error_log_id int primary key auto_increment,
+                                   broker_id int not null,
+                                   broker_error_type varchar(255) not null,
+                                   broker_error_created_at datetime not null,
+                                   broker_error_solved_at datetime,
+                                   foreign key (broker_id) references brokers(broker_id) on delete cascade
 );
 
 insert into topic_types values ('전력');

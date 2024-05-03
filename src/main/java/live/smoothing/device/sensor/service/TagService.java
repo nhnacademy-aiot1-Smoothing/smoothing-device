@@ -1,5 +1,6 @@
 package live.smoothing.device.sensor.service;
 
+import live.smoothing.device.sensor.dto.SensorTopicResponse;
 import live.smoothing.device.sensor.dto.TopicListResponse;
 
 import java.util.List;
@@ -13,11 +14,22 @@ import java.util.List;
 public interface TagService {
 
     /**
-     * 사용자의 태그를 기반으로 태그 토픽을 조회하는 메서드
+     * 사용자의 태그, 타입을 기반으로 태그 토픽을 조회하는 메서드
      *
-     * @param userId 조회할 사용자의 아이디
+     * @param userId 사용자 아이디
      * @param tags 조회할 태그 목록
+     * @param type 조회할 태그 토픽의 타입
      * @return 조회된 태그 토픽을 담은 응답 DTO
      */
-    TopicListResponse getTagTopics(String userId, List<String> tags);
+    TopicListResponse getTagTopics(String userId ,List<String> tags, String type);
+
+    /**
+     * 사용자의 태그, 타입을 기반으로 센서와 태그 토픽을 조회하는 메서드
+     *
+     * @param userId 사용자 아이디
+     * @param tags 조회할 태그 목록
+     * @param type 조회할 태그 토픽의 타입
+     * @return
+     */
+    SensorTopicResponse getSensorWithTopics(String userId ,List<String> tags, String type);
 }

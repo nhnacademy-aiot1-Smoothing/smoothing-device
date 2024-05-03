@@ -76,7 +76,7 @@ public class TopicServiceImpl implements TopicService {
     @Transactional
     public void updateTopic(Integer topicId, TopicUpdateRequest topicUpdateRequest) {
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new TopicNotFoundException());
+                .orElseThrow(TopicNotFoundException::new);
 
         TopicType topicType = topicTypeRepository.findById(topicUpdateRequest.getTopicType())
                 .orElseThrow(TopicTypeNotExistException::new);
@@ -116,7 +116,7 @@ public class TopicServiceImpl implements TopicService {
      * @inheritDoc
      */
     @Override
-    public TopicListResponse getAllTopics() {
-        return new TopicListResponse(topicRepository.findAll().stream().map(Topic::getTopic).collect(Collectors.toList()));
+    public TopicListResponse getAllTopics(String type) {
+        return new TopicListResponse(topicRepository.getTopicByTopicTypeTopicType(type).stream().map(Topic::getTopic).collect(Collectors.toList()));
     }
 }

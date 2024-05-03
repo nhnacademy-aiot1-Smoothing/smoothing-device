@@ -21,7 +21,7 @@ public class SensorController {
     private final SensorService sensorService;
 
     /**
-     * 센서 추가 API
+     * 센서 추가 APIS
      *
      * @param sensorRegisterRequest 센서 추가 요청
      * @return HTTP 상태코드

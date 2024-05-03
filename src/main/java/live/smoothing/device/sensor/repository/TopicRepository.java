@@ -50,4 +50,12 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
      * @return 토픽과 센서 아이디로 조회된 토픽
      */
     Optional<Topic> findByTopicAndSensorSensorId(String topic, Integer sensorId);
+
+    /**
+     * 센서 타입으로 토픽 목록 조회
+     *
+     * @param type 센서 타입
+     * @return 센서 타입으로 조회된 토픽 목록
+     */
+    List<Topic> getTopicByTopicTypeTopicType(String type);
 }

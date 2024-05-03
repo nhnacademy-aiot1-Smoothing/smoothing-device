@@ -10,7 +10,6 @@ import java.util.Set;
  * @Author 우혜승
  */
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

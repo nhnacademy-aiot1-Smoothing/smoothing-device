@@ -13,7 +13,7 @@ import live.smoothing.device.sensor.entity.SensorType;
 import live.smoothing.device.sensor.entity.Topic;
 import live.smoothing.device.sensor.exception.SensorErrorLogNotFoundException;
 import live.smoothing.device.sensor.exception.SensorNotFoundException;
-import live.smoothing.device.sensor.exception.SensorTypeNoutFoundException;
+import live.smoothing.device.sensor.exception.SensorTypeNotFoundException;
 import live.smoothing.device.sensor.repository.SensorErrorLogRepository;
 import live.smoothing.device.sensor.repository.SensorRepository;
 import live.smoothing.device.sensor.repository.SensorTypeRepository;
@@ -54,7 +54,7 @@ public class SensorServiceImpl implements SensorService {
     @Transactional
     public void saveSensor(SensorRegisterRequest sensorRegisterRequest) {
         SensorType sensorType = sensorTypeRepository.findById(sensorRegisterRequest.getSensorType())
-                .orElseThrow(SensorTypeNoutFoundException::new);
+                .orElseThrow(SensorTypeNotFoundException::new);
         Broker broker = brokerRepository.findById(sensorRegisterRequest.getBrokerId())
                 .orElseThrow(BrokerNotFoundException::new);
 
@@ -89,7 +89,7 @@ public class SensorServiceImpl implements SensorService {
         Sensor sensor = sensorRepository.findById(sensorId)
                 .orElseThrow(SensorNotFoundException::new);
         SensorType sensorType = sensorTypeRepository.findById(sensorUpdateRequest.getSensorType())
-                .orElseThrow(SensorTypeNoutFoundException::new);
+                .orElseThrow(SensorTypeNotFoundException::new);
 
         sensor.updateSensorName(sensorUpdateRequest.getSensorName());
         sensor.updateSensorType(sensorType);
