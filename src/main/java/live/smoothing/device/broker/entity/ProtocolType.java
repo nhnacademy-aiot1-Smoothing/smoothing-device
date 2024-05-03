@@ -7,6 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * 프로토콜 타입 엔티티
+ *
+ * @author 우혜승
+ */
 @Getter
 @Entity
 @Builder

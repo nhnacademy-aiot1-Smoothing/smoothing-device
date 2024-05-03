@@ -1,9 +1,11 @@
 package live.smoothing.device.broker.service.impl;
 
+import live.smoothing.device.adapter.RuleEngineAdapter;
 import live.smoothing.device.broker.dto.*;
 import live.smoothing.device.broker.entity.Broker;
 import live.smoothing.device.broker.entity.BrokerErrorLog;
 import live.smoothing.device.broker.entity.ProtocolType;
+import live.smoothing.device.broker.exception.AlreadyExistBroker;
 import live.smoothing.device.broker.exception.BrokerErrorNotFoundException;
 import live.smoothing.device.broker.exception.BrokerNotFoundException;
 import live.smoothing.device.broker.exception.ProtocolTypeNotFoundException;
@@ -12,11 +14,12 @@ import live.smoothing.device.broker.repository.BrokerRepository;
 import live.smoothing.device.broker.repository.ProtocolTypeRepository;
 import live.smoothing.device.broker.service.BrokerService;
 import live.smoothing.device.mq.dto.BrokerErrorRequest;
-import live.smoothing.device.mq.producer.BrokerRabbit;
-import live.smoothing.device.mq.producer.SensorRabbit;
+import live.smoothing.device.sensor.dto.TopicRequest;
 import live.smoothing.device.sensor.entity.Topic;
 import live.smoothing.device.sensor.repository.TopicRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -24,6 +27,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 브로커 서비스
+ * @see BrokerService 구현체
+ *
+ * @author 우혜승
+ */
 @AllArgsConstructor
 @Service("brokerService")
 public class BrokerServiceImpl implements BrokerService {
@@ -32,32 +41,42 @@ public class BrokerServiceImpl implements BrokerService {
     private final TopicRepository topicRepository;
     private final ProtocolTypeRepository protocolTypeRepository;
     private final BrokerErrorLogRepository brokerErrorLogRepository;
-    private final BrokerRabbit brokerRabbit;
-    private final SensorRabbit sensorRabbit;
+    private final RuleEngineAdapter ruleEngineAdapter;
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public List<BrokerInitResponse> getInitBrokers() {
+    public List<RuleEngineResponse> getInitBrokers() {
         List<Broker> brokers = brokerRepository.getAllWith();
-        List<BrokerInitResponse> responses = new LinkedList<>();
+        List<RuleEngineResponse> responses = new LinkedList<>();
         for (Broker broker : brokers) {
-            responses.add(BrokerInitResponse.builder()
+            responses.add(RuleEngineResponse.builder()
                     .brokerId(broker.getBrokerId())
                     .brokerIp(broker.getBrokerIp())
                     .brokerPort(broker.getBrokerPort())
                     .protocolType(broker.getProtocolType().getProtocolType())
                     .topics(broker.getSensors().stream().flatMap(sensor -> sensor.getTopics().stream())
                             .map(Topic::getTopic)
-                            .collect(Collectors.toList()))
+                            .collect(Collectors.toSet()))
                     .build());
         }
         return responses;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @Transactional
     public void addBroker(BrokerAddRequest request) {
         ProtocolType protocolType = protocolTypeRepository.findById(request.getProtocolType())
                 .orElseThrow(ProtocolTypeNotFoundException::new);
+
+        if(brokerRepository.existsByBrokerIpAndBrokerPort(request.getBrokerIp(), request.getBrokerPort())) {
+            throw new AlreadyExistBroker();
+        }
+
 
         Broker broker = Broker.builder()
                 .brokerName(request.getBrokerName())
@@ -65,15 +84,28 @@ public class BrokerServiceImpl implements BrokerService {
                 .brokerPort(request.getBrokerPort())
                 .protocolType(protocolType)
                 .build();
-        brokerRepository.save(broker);
-        brokerRabbit.saveBroker(broker.getBrokerIp(), broker.getBrokerPort(), broker.getBrokerId(), protocolType.getProtocolType());
+        broker = brokerRepository.save(broker);
+
+        ruleEngineAdapter.addBroker(BrokerGenerateRequest.builder()
+                .brokerId(broker.getBrokerId())
+                .brokerIp(broker.getBrokerIp())
+                .brokerPort(broker.getBrokerPort())
+                .protocolType(protocolType.getProtocolType())
+                .build());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public BrokerListResponse getBrokers() {
-        return new BrokerListResponse(brokerRepository.getBrokers());
+    public BrokerListResponse getBrokers(Pageable pageable) {
+        Page<BrokerResponse> brokers = brokerRepository.getBrokers(pageable);
+        return new BrokerListResponse(brokers.getContent());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @Transactional
     public void updateBroker(Integer brokerId, BrokerUpdateRequest brokerUpdateRequest) {
@@ -86,28 +118,44 @@ public class BrokerServiceImpl implements BrokerService {
         broker.updateBrokerPort(brokerUpdateRequest.getBrokerPort());
         broker.updateBrokerName(brokerUpdateRequest.getBrokerName());
         broker.updateProtocolType(protocolType);
-        brokerRepository.save(broker);
-        brokerRabbit.deleteBroker(brokerId);
+        broker = brokerRepository.save(broker);
+
+        ruleEngineAdapter.deleteBroker(brokerId);
+        ruleEngineAdapter.addBroker(BrokerGenerateRequest.builder()
+                .brokerId(broker.getBrokerId())
+                .brokerIp(broker.getBrokerIp())
+                .brokerPort(broker.getBrokerPort())
+                .protocolType(protocolType.getProtocolType())
+                .build());
         List<Topic> topics = topicRepository.getTopicBySensorBrokerBrokerId(brokerId);
-        brokerRabbit.saveBroker(broker.getBrokerIp(), broker.getBrokerPort(), broker.getBrokerId(), protocolType.getProtocolType());
         for(Topic topic : topics) {
-            sensorRabbit.saveTopic(broker.getBrokerId(), topic.getTopic());
+            ruleEngineAdapter.addTopic(new TopicRequest(brokerId, topic.getTopic()));
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void deleteBroker(Integer brokerId) {
         Broker broker = brokerRepository.findById(brokerId)
                 .orElseThrow(BrokerNotFoundException::new);
         brokerRepository.delete(broker);
-        brokerRabbit.deleteBroker(brokerId);
+        ruleEngineAdapter.deleteBroker(brokerId);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public BrokerErrorListResponse getErrors() {
-        return new BrokerErrorListResponse(brokerErrorLogRepository.getAllErrors());
+    public BrokerErrorListResponse getErrors(Pageable pageable) {
+        Page<BrokerErrorResponse> errors = brokerErrorLogRepository.getAllErrors(pageable);
+        return new BrokerErrorListResponse(errors.getContent());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void deleteError(Integer brokerErrorId) {
         BrokerErrorLog brokerErrorLog = brokerErrorLogRepository.findById(brokerErrorId)
@@ -115,6 +163,9 @@ public class BrokerServiceImpl implements BrokerService {
         brokerErrorLogRepository.delete(brokerErrorLog);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void addBrokerError(BrokerErrorRequest request) {
         BrokerErrorLog brokerErrorLog = BrokerErrorLog.builder()

@@ -2,20 +2,22 @@ package live.smoothing.device.broker.dto;
 
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
+/**
+ * Rule Engine 초기화용 응답
+ *
+ * @Author 우혜승
+ */
 @Getter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class BrokerInitResponse {
+public class RuleEngineResponse {
 
     private Integer brokerId;
-
     private String brokerIp;
-
     private Integer brokerPort;
-
     private String protocolType;
-
-    private List<String> topics;
+    private Set<String> topics;
 }
