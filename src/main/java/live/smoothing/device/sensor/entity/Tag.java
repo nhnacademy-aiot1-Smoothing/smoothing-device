@@ -32,4 +32,7 @@ public class Tag {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "tag")
     private List<SensorTag> sensorTags;
 
+    public void updateTagName(String tagName) {
+        this.tagName = tagName;
+    }
 }

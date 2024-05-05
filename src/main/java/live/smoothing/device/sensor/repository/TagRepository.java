@@ -1,11 +1,13 @@
 package live.smoothing.device.sensor.repository;
 
 import live.smoothing.device.sensor.dto.SensorTopicDto;
+import live.smoothing.device.sensor.dto.TagResponse;
 import live.smoothing.device.sensor.entity.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 태그 레포지토리
@@ -36,5 +38,10 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
             "WHERE t.tagName IN :tags AND to.topicType.topicType = :type AND t.userId = :userId " +
             "GROUP BY to.topic HAVING COUNT(to.topic) = :size")
     List<SensorTopicDto> getSensorTopicsByTagsAndType(String userId ,List<String> tags, String type, Long size);
+
+    boolean existsByUserIdAndTagName(String userId, String tagName);
+
+    @Query("SELECT new live.smoothing.device.sensor.dto.TagResponse(t.tagId, t.tagName) FROM Tag t WHERE t.userId = :userId")
+    List<TagResponse> getByUserId(String userId);
 
 }
