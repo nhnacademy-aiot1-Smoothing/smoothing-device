@@ -31,7 +31,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
             "GROUP BY to.topic HAVING COUNT(to.topic) = :size")
     List<String> getTopicsByUserIdAndTags(String userId ,List<String> tags, Long size, String type);
 
-    @Query("SELECT new live.smoothing.device.sensor.dto.SensorTopicDto(to.topic, to.topicType.topicType) FROM Tag t " +
+    @Query("SELECT new live.smoothing.device.sensor.dto.SensorTopicDto(s.sensorName, to.topic) FROM Tag t " +
             "JOIN t.sensorTags st " +
             "JOIN st.sensor s " +
             "JOIN s.topics to " +

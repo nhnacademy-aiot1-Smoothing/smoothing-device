@@ -7,6 +7,7 @@ import live.smoothing.device.sensor.dto.TopicListResponse;
 import live.smoothing.device.sensor.entity.Tag;
 import live.smoothing.device.sensor.exception.TagAlreadyExistException;
 import live.smoothing.device.sensor.exception.TagNotFoundException;
+import live.smoothing.device.sensor.exception.TagOwnerException;
 import live.smoothing.device.sensor.repository.TagRepository;
 import live.smoothing.device.sensor.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -60,23 +61,29 @@ public class TagServiceImpl implements TagService {
         return new TagListResponse(tagRepository.getByUserId(userId));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void updateTag(Integer tagId, String userId, TagRequest tagRequest) {
         Tag tag = tagRepository.findById(tagId)
                 .orElseThrow(TagNotFoundException::new);
         if(!tag.getUserId().equals(userId)) {
-            throw new IllegalArgumentException();
+            throw new TagOwnerException();
         }
         tag.updateTagName(tagRequest.getTagName());
         tagRepository.save(tag);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void deleteTag(String userId, Integer tagId) {
         Tag tag = tagRepository.findById(tagId)
                 .orElseThrow(TagNotFoundException::new);
         if(!tag.getUserId().equals(userId)) {
-            throw new IllegalArgumentException();
+            throw new TagOwnerException();
         }
         tagRepository.delete(tag);
     }
