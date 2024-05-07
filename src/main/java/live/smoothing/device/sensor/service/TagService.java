@@ -1,6 +1,8 @@
 package live.smoothing.device.sensor.service;
 
 import live.smoothing.device.sensor.dto.SensorTopicResponse;
+import live.smoothing.device.sensor.dto.TagListResponse;
+import live.smoothing.device.sensor.dto.TagRequest;
 import live.smoothing.device.sensor.dto.TopicListResponse;
 
 import java.util.List;
@@ -32,4 +34,30 @@ public interface TagService {
      * @return
      */
     SensorTopicResponse getSensorWithTopics(String userId ,List<String> tags, String type);
+
+    /**
+     * 태그를 등록하는 메서드
+     *
+     * @param userId 사용자 아이디
+     * @param tagRequest 태그 등록 요청 DTO
+     */
+    void addTag(String userId, TagRequest tagRequest);
+
+    /**
+     * 사용자의 태그 목록을 조회하는 메서드
+     *
+     * @param userId 사용자 아이디
+     * @return 사용자의 태그 목록을 담은 응답 DTO
+     */
+    TagListResponse getTags(String userId);
+
+    /**
+     * 태그를 수정하는 메서드
+     *
+     * @param userId 사용자 아이디
+     * @param tagRequest 태그 수정 요청 DTO
+     */
+    void updateTag(Integer tagId, String userId, TagRequest tagRequest);
+
+    void deleteTag(String userId, Integer tagId);
 }

@@ -3,6 +3,8 @@ package live.smoothing.device.sensor.repository;
 import live.smoothing.device.broker.entity.Broker;
 import live.smoothing.device.broker.entity.ProtocolType;
 import live.smoothing.device.broker.repository.BrokerRepository;
+import live.smoothing.device.sensor.dto.SensorTopicDto;
+import live.smoothing.device.sensor.dto.TagResponse;
 import live.smoothing.device.sensor.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,14 +89,33 @@ class TagRepositoryTest {
         sensorTagRepository.save(sensorTag);
         brokerRepository.save(broker);
         topicRepository.save(topic);
+        entityManager.clear();
     }
 
     @Test
     void getTopicsByUserIdAndTags() {
-        entityManager.clear();
-
         List<String> topics = tagRepository.getTopicsByUserIdAndTags("testUserId", List.of("testTagName"), 1L, "testTopicType");
         assertEquals(1, topics.size());
         assertEquals("testTopic", topics.get(0));
     }
+
+    @Test
+    void getSensorTopicsByTagsAndType() {
+        List<SensorTopicDto> sensorTopics = tagRepository.getSensorTopicsByTagsAndType("testUserId", List.of("testTagName"), "testTopicType", 1L);
+        assertEquals(1, sensorTopics.size());
+        assertEquals("testTopic", sensorTopics.get(0).getTopic());
+    }
+
+    @Test
+    void existsByUserIdAndTagName() {
+        assertTrue(tagRepository.existsByUserIdAndTagName("testUserId", "testTagName"));
+    }
+
+    @Test
+    void getByUserId() {
+        List<TagResponse> tags = tagRepository.getByUserId("testUserId");
+        assertEquals(1, tags.size());
+        assertEquals("testTagName", tags.get(0).getTagName());
+    }
+
 }
