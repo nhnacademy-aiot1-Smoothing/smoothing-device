@@ -175,4 +175,9 @@ public class BrokerServiceImpl implements BrokerService {
                 .build();
         brokerErrorLogRepository.save(brokerErrorLog);
     }
+
+    @Override
+    public ProtocolTypeResponse getProtocolTypes() {
+        return new ProtocolTypeResponse(protocolTypeRepository.findAll().stream().map(ProtocolType::getProtocolType).collect(Collectors.toList()));
+    }
 }
