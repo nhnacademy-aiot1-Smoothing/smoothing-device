@@ -36,7 +36,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
             "JOIN st.sensor s " +
             "JOIN s.topics to " +
             "WHERE t.tagName IN :tags AND to.topicType.topicType = :type AND t.userId = :userId " +
-            "GROUP BY to.topic HAVING COUNT(to.topic) = :size")
+            "GROUP BY to.topic, s.sensorName HAVING COUNT(to.topic) = :size")
     List<SensorTopicDto> getSensorTopicsByTagsAndType(String userId ,List<String> tags, String type, Long size);
 
     boolean existsByUserIdAndTagName(String userId, String tagName);
