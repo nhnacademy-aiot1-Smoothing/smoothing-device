@@ -13,7 +13,6 @@ drop table if exists sensor_types;
 drop table if exists protocol_types;
 
 
-
 create table topic_types (
                              topic_type varchar(255) not null primary key
 );
