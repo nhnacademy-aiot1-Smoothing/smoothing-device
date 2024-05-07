@@ -67,4 +67,5 @@ public interface BrokerService {
      */
     void addBrokerError(BrokerErrorRequest request);
 
+    ProtocolTypeResponse getProtocolTypes();
 }

@@ -137,6 +137,7 @@ public class BrokerServiceImpl implements BrokerService {
      * @inheritDoc
      */
     @Override
+    @Transactional
     public void deleteBroker(Integer brokerId) {
         Broker broker = brokerRepository.findById(brokerId)
                 .orElseThrow(BrokerNotFoundException::new);
@@ -174,5 +175,10 @@ public class BrokerServiceImpl implements BrokerService {
                 .brokerErrorCreatedAt(request.getCreatedAt())
                 .build();
         brokerErrorLogRepository.save(brokerErrorLog);
+    }
+
+    @Override
+    public ProtocolTypeResponse getProtocolTypes() {
+        return new ProtocolTypeResponse(protocolTypeRepository.findAll().stream().map(ProtocolType::getProtocolType).collect(Collectors.toList()));
     }
 }

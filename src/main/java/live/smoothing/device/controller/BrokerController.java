@@ -1,10 +1,7 @@
 package live.smoothing.device.controller;
 
-import live.smoothing.device.broker.dto.BrokerErrorListResponse;
-import live.smoothing.device.broker.dto.BrokerListResponse;
-import live.smoothing.device.broker.dto.BrokerUpdateRequest;
+import live.smoothing.device.broker.dto.*;
 import live.smoothing.device.broker.service.BrokerService;
-import live.smoothing.device.broker.dto.BrokerAddRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -93,6 +90,11 @@ public class BrokerController {
     public ResponseEntity<Void> deleteError(@PathVariable("brokerErrorId") Integer brokerErrorId) {
         brokerService.deleteError(brokerErrorId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/protocols")
+    public ResponseEntity<ProtocolTypeResponse> getProtocolTypes() {
+        return ResponseEntity.ok(brokerService.getProtocolTypes());
     }
 
 }
