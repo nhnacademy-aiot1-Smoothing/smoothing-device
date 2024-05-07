@@ -137,6 +137,7 @@ public class BrokerServiceImpl implements BrokerService {
      * @inheritDoc
      */
     @Override
+    @Transactional
     public void deleteBroker(Integer brokerId) {
         Broker broker = brokerRepository.findById(brokerId)
                 .orElseThrow(BrokerNotFoundException::new);
