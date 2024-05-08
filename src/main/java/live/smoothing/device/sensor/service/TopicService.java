@@ -55,4 +55,6 @@ public interface TopicService {
      * @return 조회된 모든 토픽 목록을 담은 응답 DTO
      */
     TopicListResponse getAllTopics(String type);
+
+    SensorTopicResponse getAllSensorWithTopicsByType(String type);
 }
