@@ -119,4 +119,9 @@ public class TopicController {
                                                                    @RequestParam("type") String type) {
         return ResponseEntity.ok(tagService.getSensorWithTopics(userId ,tags, type));
     }
+
+    @GetMapping("/sensors/all")
+    public ResponseEntity<SensorTopicResponse> getAllSensorWithTopics(@RequestParam("type") String type) {
+        return ResponseEntity.ok(topicService.getAllSensorWithTopicsByType(type));
+    }
 }

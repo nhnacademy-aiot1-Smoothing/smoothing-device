@@ -1,5 +1,6 @@
 package live.smoothing.device.sensor.repository;
 
+import live.smoothing.device.sensor.dto.SensorTopicDto;
 import live.smoothing.device.sensor.dto.TopicResponse;
 import live.smoothing.device.sensor.entity.Topic;
 import org.springframework.data.domain.Page;
@@ -58,4 +59,10 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
      * @return 센서 타입으로 조회된 토픽 목록
      */
     List<Topic> getTopicByTopicTypeTopicType(String type);
+
+    @Query("SELECT new live.smoothing.device.sensor.dto.SensorTopicDto(s.sensorName, t.topic) " +
+            "FROM Topic t " +
+            "JOIN t.sensor s " +
+            "WHERE t.topicType.topicType = :type")
+    List<SensorTopicDto> getSensorTopicsByTopicType(String type);
 }

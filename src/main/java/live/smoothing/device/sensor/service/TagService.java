@@ -60,4 +60,5 @@ public interface TagService {
     void updateTag(Integer tagId, String userId, TagRequest tagRequest);
 
     void deleteTag(String userId, Integer tagId);
+
 }
