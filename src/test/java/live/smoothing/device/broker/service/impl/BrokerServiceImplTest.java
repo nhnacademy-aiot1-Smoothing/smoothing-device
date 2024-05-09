@@ -341,7 +341,7 @@ class BrokerServiceImplTest {
         BrokerErrorRequest request = new BrokerErrorRequest();
         ReflectionTestUtils.setField(request, "brokerId", 1);
         ReflectionTestUtils.setField(request, "brokerErrorType", "testBrokerErrorType");
-        ReflectionTestUtils.setField(request, "createdAt", LocalDateTime.now());
+        ReflectionTestUtils.setField(request, "createdAt", LocalDateTime.now().toString());
 
         when(brokerRepository.getReferenceById(request.getBrokerId())).thenReturn(Broker.builder().build());
 
