@@ -1,5 +1,6 @@
 package live.smoothing.device.sensor.repository;
 
+import live.smoothing.device.sensor.dao.SensorTagDao;
 import live.smoothing.device.sensor.dto.SensorTopicDto;
 import live.smoothing.device.sensor.dto.TagResponse;
 import live.smoothing.device.sensor.entity.Tag;
@@ -7,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 태그 레포지토리
@@ -44,4 +44,10 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
     @Query("SELECT new live.smoothing.device.sensor.dto.TagResponse(t.tagId, t.tagName) FROM Tag t WHERE t.userId = :userId")
     List<TagResponse> getByUserId(String userId);
 
+    @Query("SELECT new live.smoothing.device.sensor.dao.SensorTagDao(s.sensorId, t.tagId, t.tagName) " +
+            "FROM Tag t " +
+            "JOIN t.sensorTags st " +
+            "JOIN st.sensor s " +
+            "WHERE t.userId = :userId AND s.sensorId IN :sensorIds")
+    List<SensorTagDao> getSensorTags(String userId, List<Integer> sensorIds);
 }

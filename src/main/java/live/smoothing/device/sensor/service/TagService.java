@@ -1,9 +1,6 @@
 package live.smoothing.device.sensor.service;
 
-import live.smoothing.device.sensor.dto.SensorTopicResponse;
-import live.smoothing.device.sensor.dto.TagListResponse;
-import live.smoothing.device.sensor.dto.TagRequest;
-import live.smoothing.device.sensor.dto.TopicListResponse;
+import live.smoothing.device.sensor.dto.*;
 
 import java.util.List;
 
@@ -61,4 +58,5 @@ public interface TagService {
 
     void deleteTag(String userId, Integer tagId);
 
+    SensorTagsResponse getSensorTags(String userId, List<Integer> sensorIds);
 }

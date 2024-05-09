@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -172,7 +173,7 @@ public class BrokerServiceImpl implements BrokerService {
         BrokerErrorLog brokerErrorLog = BrokerErrorLog.builder()
                 .broker(brokerRepository.getReferenceById(request.getBrokerId()))
                 .brokerErrorType(request.getBrokerErrorType())
-                .brokerErrorCreatedAt(request.getCreatedAt())
+                .brokerErrorCreatedAt(LocalDateTime.parse(request.getCreatedAt()))
                 .build();
         brokerErrorLogRepository.save(brokerErrorLog);
     }
