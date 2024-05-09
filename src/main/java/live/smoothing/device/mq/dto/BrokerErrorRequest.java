@@ -16,5 +16,5 @@ public class BrokerErrorRequest {
 
     private Integer brokerId;
     private String brokerErrorType;
-    private LocalDateTime createdAt;
+    private String createdAt;
 }

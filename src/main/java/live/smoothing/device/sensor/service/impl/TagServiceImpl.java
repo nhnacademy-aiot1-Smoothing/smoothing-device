@@ -1,9 +1,8 @@
 package live.smoothing.device.sensor.service.impl;
 
-import live.smoothing.device.sensor.dto.SensorTopicResponse;
-import live.smoothing.device.sensor.dto.TagListResponse;
-import live.smoothing.device.sensor.dto.TagRequest;
-import live.smoothing.device.sensor.dto.TopicListResponse;
+import live.smoothing.device.sensor.dao.SensorTagDao;
+import live.smoothing.device.sensor.dto.*;
+import live.smoothing.device.sensor.entity.SensorTag;
 import live.smoothing.device.sensor.entity.Tag;
 import live.smoothing.device.sensor.exception.TagAlreadyExistException;
 import live.smoothing.device.sensor.exception.TagNotFoundException;
@@ -14,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static java.util.stream.Collectors.*;
 
 /**
  * 태그 서비스 구현체<br>
@@ -88,5 +89,8 @@ public class TagServiceImpl implements TagService {
         tagRepository.delete(tag);
     }
 
-
+    @Override
+    public SensorTagsResponse getSensorTags(String userId, List<Integer> sensorIds) {
+        return new SensorTagsResponse(tagRepository.getSensorTags(userId, sensorIds).stream().collect(groupingBy(SensorTagDao::getSensorId,mapping(sensorTagDao -> new TagResponse(sensorTagDao.getTagId(), sensorTagDao.getTagName()),toList()))));
+    }
 }

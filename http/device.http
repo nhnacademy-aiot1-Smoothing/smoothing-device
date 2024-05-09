@@ -140,3 +140,14 @@ GET http://localhost:8005/api/device/topics/sensors/all?type=전력
 
 ### 프로토콜 타입 목록 조회
 GET http://localhost:8005/api/device/brokers/protocols
+
+### 센서 태그 목록 조회
+POST http://localhost:8005/api/device/tags/sensors
+X-User-ID: haha
+Content-Type: application/json
+
+{
+  "sensorIds": [
+    1, 2
+  ]
+}

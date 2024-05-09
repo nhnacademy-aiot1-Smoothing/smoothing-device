@@ -1,5 +1,7 @@
 package live.smoothing.device.controller;
 
+import live.smoothing.device.sensor.dto.SensorIdListRequest;
+import live.smoothing.device.sensor.dto.SensorTagsResponse;
 import live.smoothing.device.sensor.dto.TagListResponse;
 import live.smoothing.device.sensor.dto.TagRequest;
 import live.smoothing.device.sensor.service.TagService;
@@ -43,6 +45,10 @@ public class TagController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-
+    @PostMapping("/sensors")
+    public SensorTagsResponse getSensorTags(@RequestHeader("X-USER-ID") String userId,
+                                            @RequestBody SensorIdListRequest sensorIdListRequest) {
+        return tagService.getSensorTags(userId, sensorIdListRequest.getSensorIds());
+    }
 
 }
