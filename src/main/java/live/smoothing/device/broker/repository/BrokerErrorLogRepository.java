@@ -20,6 +20,8 @@ public interface BrokerErrorLogRepository extends JpaRepository<BrokerErrorLog, 
      * @param pageable 페이징 정보
      * @return 에러 로그 페이지
      */
-    @Query("SELECT new live.smoothing.device.broker.dto.BrokerErrorResponse(b.brokerErrorType, b.broker.brokerName, b.brokerErrorCreatedAt, b.brokerErrorSolvedAt) FROM BrokerErrorLog b")
+    @Query("SELECT new live.smoothing.device.broker.dto.BrokerErrorResponse(be.brokerErrorLogId, be.brokerErrorType, be.broker.brokerName, be.brokerErrorCreatedAt, be.brokerErrorSolvedAt, b.brokerIp, b.brokerPort) " +
+            "FROM BrokerErrorLog be " +
+            "JOIN be.broker b")
     Page<BrokerErrorResponse> getAllErrors(Pageable pageable);
 }
