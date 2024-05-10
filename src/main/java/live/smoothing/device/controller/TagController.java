@@ -1,9 +1,6 @@
 package live.smoothing.device.controller;
 
-import live.smoothing.device.sensor.dto.SensorIdListRequest;
-import live.smoothing.device.sensor.dto.SensorTagsResponse;
-import live.smoothing.device.sensor.dto.TagListResponse;
-import live.smoothing.device.sensor.dto.TagRequest;
+import live.smoothing.device.sensor.dto.*;
 import live.smoothing.device.sensor.service.TagService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +46,18 @@ public class TagController {
     public SensorTagsResponse getSensorTags(@RequestHeader("X-USER-ID") String userId,
                                             @RequestBody SensorIdListRequest sensorIdListRequest) {
         return tagService.getSensorTags(userId, sensorIdListRequest.getSensorIds());
+    }
+
+    @PostMapping("/sensorTag")
+    public void addSensorTag(@RequestHeader("X-USER-ID") String userId,
+                             @RequestBody SensorTagAddRequest sensorTagAddRequest) {
+        tagService.addSensorTag(userId, sensorTagAddRequest);
+    }
+
+    @DeleteMapping("/sensorTag/{sensorTagId}")
+    public void deleteSensorTag(@RequestHeader("X-USER-ID") String userId,
+                                @PathVariable Integer sensorTagId) {
+        tagService.removeSensorTag(userId, sensorTagId);
     }
 
 }

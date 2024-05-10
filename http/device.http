@@ -151,3 +151,17 @@ Content-Type: application/json
     1, 2
   ]
 }
+
+### 센서 태그 등록
+POST http://localhost:8005/api/device/tags/sensorTag
+X-User-ID: haha
+Content-Type: application/json
+
+{
+  "sensorId": 1,
+  "tagId": 2
+}
+
+### 센서 태그 삭제
+DELETE http://localhost:8005/api/device/tags/sensorTag/1
+X-User-ID: haha
