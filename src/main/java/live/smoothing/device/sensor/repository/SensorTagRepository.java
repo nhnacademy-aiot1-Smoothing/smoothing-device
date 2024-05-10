@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author 우혜승
  */
 public interface SensorTagRepository extends JpaRepository<SensorTag, Integer>{
+
+    boolean existsByTagTagIdAndSensorSensorId(Integer tagId, Integer sensorId);
 }

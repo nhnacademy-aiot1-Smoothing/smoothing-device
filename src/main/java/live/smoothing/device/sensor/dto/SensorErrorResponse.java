@@ -12,13 +12,15 @@ import java.time.LocalDateTime;
 @Getter
 public class SensorErrorResponse {
 
+    private final Integer sensorErrorId;
     private final String sensorErrorType;
     private final String sensorName;
     private final String createdAt;
     private final Double value;
     private final String topic;
 
-    public SensorErrorResponse(String sensorErrorType, String sensorName, LocalDateTime createdAt, Double value, String topic) {
+    public SensorErrorResponse(Integer sensorErrorId ,String sensorErrorType, String sensorName, LocalDateTime createdAt, Double value, String topic) {
+        this.sensorErrorId = sensorErrorId;
         this.sensorErrorType = sensorErrorType;
         this.sensorName = sensorName;
         this.createdAt = createdAt == null ? null : createdAt.toString();

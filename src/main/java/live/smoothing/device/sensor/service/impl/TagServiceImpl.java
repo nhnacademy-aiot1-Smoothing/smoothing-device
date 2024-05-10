@@ -2,11 +2,14 @@ package live.smoothing.device.sensor.service.impl;
 
 import live.smoothing.device.sensor.dao.SensorTagDao;
 import live.smoothing.device.sensor.dto.*;
+import live.smoothing.device.sensor.entity.Sensor;
 import live.smoothing.device.sensor.entity.SensorTag;
 import live.smoothing.device.sensor.entity.Tag;
 import live.smoothing.device.sensor.exception.TagAlreadyExistException;
 import live.smoothing.device.sensor.exception.TagNotFoundException;
 import live.smoothing.device.sensor.exception.TagOwnerException;
+import live.smoothing.device.sensor.repository.SensorRepository;
+import live.smoothing.device.sensor.repository.SensorTagRepository;
 import live.smoothing.device.sensor.repository.TagRepository;
 import live.smoothing.device.sensor.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +28,10 @@ import static java.util.stream.Collectors.*;
 @Service("tagService")
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
+
     private final TagRepository tagRepository;
+    private final SensorTagRepository sensorTagRepository;
+    private final SensorRepository sensorRepository;
 
     /**
      * @inheritDoc
@@ -92,5 +98,27 @@ public class TagServiceImpl implements TagService {
     @Override
     public SensorTagsResponse getSensorTags(String userId, List<Integer> sensorIds) {
         return new SensorTagsResponse(tagRepository.getSensorTags(userId, sensorIds).stream().collect(groupingBy(SensorTagDao::getSensorId,mapping(sensorTagDao -> new TagResponse(sensorTagDao.getTagId(), sensorTagDao.getTagName()),toList()))));
+    }
+
+    @Override
+    public void addSensorTag(String userId, SensorTagAddRequest sensorTagAddRequest) {
+        if(sensorTagRepository.existsByTagTagIdAndSensorSensorId(sensorTagAddRequest.getTagId(), sensorTagAddRequest.getSensorId())) {
+            throw new TagAlreadyExistException();
+        }
+        SensorTag sensorTag = SensorTag.builder()
+                .tag(tagRepository.getReferenceById(sensorTagAddRequest.getTagId()))
+                .sensor(sensorRepository.getReferenceById(sensorTagAddRequest.getSensorId()))
+                .build();
+        sensorTagRepository.save(sensorTag);
+    }
+
+    @Override
+    public void removeSensorTag(String userId, Integer sensorTagId) {
+        SensorTag sensorTag = sensorTagRepository.findById(sensorTagId)
+                .orElseThrow(TagNotFoundException::new);
+        if(!sensorTag.getTag().getUserId().equals(userId)) {
+            throw new TagOwnerException();
+        }
+        sensorTagRepository.delete(sensorTag);
     }
 }
