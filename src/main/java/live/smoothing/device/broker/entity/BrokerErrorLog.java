@@ -26,7 +26,7 @@ public class BrokerErrorLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer brokerErrorLogId;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "broker_id")
     private Broker broker;
 
