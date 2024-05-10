@@ -58,7 +58,8 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
      * @param type 센서 타입
      * @return 센서 타입으로 조회된 토픽 목록
      */
-    List<Topic> getTopicByTopicTypeTopicType(String type);
+    @Query("SELECT t.topic FROM Topic t WHERE t.topicType.topicType = :type")
+    List<String > getTopicByTopicType(String type);
 
     @Query("SELECT new live.smoothing.device.sensor.dto.SensorTopicDto(s.sensorName, t.topic) " +
             "FROM Topic t " +

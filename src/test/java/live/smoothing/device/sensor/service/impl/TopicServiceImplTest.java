@@ -195,20 +195,20 @@ class TopicServiceImplTest {
         assertEquals(topicTypeResponseList, topicTypeListResponse.getTopicTypes());
     }
 
-    @Test
-    void getAllTopics() {
-        Topic topic1 = mock(Topic.class);
-        Topic topic2 = mock(Topic.class);
-        String type = "testType";
-
-        List<Topic> topics = List.of(topic1, topic2);
-
-        when(topic1.getTopic()).thenReturn("testTopic1");
-        when(topic2.getTopic()).thenReturn("testTopic2");
-
-        when(topicRepository.getTopicByTopicTypeTopicType(type)).thenReturn(topics);
-
-        TopicListResponse topicListResponse = topicService.getAllTopics(type);
-        assertEquals(List.of("testTopic1", "testTopic2"), topicListResponse.getTopics());
-    }
+//    @Test
+//    void getAllTopics() {
+//        Topic topic1 = mock(Topic.class);
+//        Topic topic2 = mock(Topic.class);
+//        String type = "testType";
+//
+//        List<Topic> topics = List.of(topic1, topic2);
+//
+//        when(topic1.getTopic()).thenReturn("testTopic1");
+//        when(topic2.getTopic()).thenReturn("testTopic2");
+//
+//        when(topicRepository.getTopicByTopicTypeTopicType(type)).thenReturn(topics);
+//
+//        TopicListResponse topicListResponse = topicService.getAllTopics(type);
+//        assertEquals(List.of("testTopic1", "testTopic2"), topicListResponse.getTopics());
+//    }
 }

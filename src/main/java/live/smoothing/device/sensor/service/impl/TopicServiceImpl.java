@@ -117,7 +117,7 @@ public class TopicServiceImpl implements TopicService {
      */
     @Override
     public TopicListResponse getAllTopics(String type) {
-        return new TopicListResponse(topicRepository.getTopicByTopicTypeTopicType(type).stream().map(Topic::getTopic).collect(Collectors.toList()));
+        return new TopicListResponse(topicRepository.getTopicByTopicType(type));
     }
 
     @Override

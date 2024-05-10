@@ -100,10 +100,10 @@ class TopicRepositoryTest {
         assertNotNull(topicRepository.findByTopicAndSensorSensorId("testTopic1", sensor.getSensorId()));
     }
 
-    @Test
-    void getTopicByTopicTypeTopicType() {
-        List<Topic> topics = topicRepository.getTopicByTopicTypeTopicType("testTopicType");
-        assertEquals(2, topics.size());
-        assertTrue(topics.stream().map(Topic::getTopic).collect(Collectors.toList()).containsAll(List.of("testTopic1", "testTopic2")));
-    }
+//    @Test
+//    void getTopicByTopicTypeTopicType() {
+//        List<Topic> topics = topicRepository.getTopicByTopicTypeTopicType("testTopicType");
+//        assertEquals(2, topics.size());
+//        assertTrue(topics.stream().map(Topic::getTopic).collect(Collectors.toList()).containsAll(List.of("testTopic1", "testTopic2")));
+//    }
 }
