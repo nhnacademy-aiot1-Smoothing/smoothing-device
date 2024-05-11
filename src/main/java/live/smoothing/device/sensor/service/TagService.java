@@ -62,5 +62,5 @@ public interface TagService {
 
     void addSensorTag(String userId, SensorTagAddRequest sensorTagAddRequest);
 
-    void removeSensorTag(String userId, Integer sensorTagId);
+    void removeSensorTag(String userId, Integer sensorId, Integer tagId);
 }

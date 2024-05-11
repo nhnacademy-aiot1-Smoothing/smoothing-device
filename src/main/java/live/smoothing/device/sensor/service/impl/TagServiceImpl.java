@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.*;
 
@@ -113,9 +114,14 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void removeSensorTag(String userId, Integer sensorTagId) {
-        SensorTag sensorTag = sensorTagRepository.findById(sensorTagId)
-                .orElseThrow(TagNotFoundException::new);
+    public void removeSensorTag(String userId, Integer sensorId, Integer tagId) {
+
+        SensorTag sensorTag = sensorTagRepository.findBySensorSensorIdAndTagTagId(sensorId, tagId);
+
+        if(Objects.isNull(sensorTag)) {
+            throw new TagNotFoundException();
+        }
+
         if(!sensorTag.getTag().getUserId().equals(userId)) {
             throw new TagOwnerException();
         }
