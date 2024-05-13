@@ -78,7 +78,7 @@ class BrokerControllerTest {
 
     @Test
     void getErrors() throws Exception {
-        BrokerErrorListResponse brokerErrorListResponse = new BrokerErrorListResponse(List.of());
+        BrokerErrorListResponse brokerErrorListResponse = new BrokerErrorListResponse(List.of(),1);
 
         when(brokerService.getErrors(any())).thenReturn(brokerErrorListResponse);
 
