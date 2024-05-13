@@ -54,10 +54,10 @@ public class TagController {
         tagService.addSensorTag(userId, sensorTagAddRequest);
     }
 
-    @DeleteMapping("/sensorTag/{sensorTagId}")
+    @DeleteMapping("/sensorTag/{sensorId}/{tagId}")
     public void deleteSensorTag(@RequestHeader("X-USER-ID") String userId,
-                                @PathVariable Integer sensorTagId) {
-        tagService.removeSensorTag(userId, sensorTagId);
+                                @PathVariable Integer sensorId, @PathVariable Integer tagId) {
+        tagService.removeSensorTag(userId, sensorId, tagId);
     }
 
 }
