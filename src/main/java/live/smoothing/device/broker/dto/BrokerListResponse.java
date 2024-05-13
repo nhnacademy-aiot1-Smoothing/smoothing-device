@@ -15,4 +15,6 @@ import java.util.List;
 public class BrokerListResponse {
 
     private final List<BrokerResponse> brokers;
+
+    private final int totalPage;
 }

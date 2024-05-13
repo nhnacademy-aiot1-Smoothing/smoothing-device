@@ -15,4 +15,5 @@ import java.util.List;
 public class BrokerErrorListResponse {
 
     private final List<BrokerErrorResponse> connectErrors;
+    private final int totalPage;
 }

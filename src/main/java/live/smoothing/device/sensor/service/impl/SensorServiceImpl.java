@@ -77,7 +77,7 @@ public class SensorServiceImpl implements SensorService {
             throw new BrokerNotFoundException();
         }
         Page<SensorResponse> sensorResponses = sensorRepository.findByBrokerBrokerId(brokerId, pageable);
-        return new SensorListResponse(sensorResponses.getContent());
+        return new SensorListResponse(sensorResponses.getContent(), sensorResponses.getTotalPages());
     }
 
     /**

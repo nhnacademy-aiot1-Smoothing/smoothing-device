@@ -34,9 +34,9 @@ POST http://localhost:8005/api/device/sensors
 Content-Type: application/json
 
 {
-  "sensorName": "냉장고 전기 센서",
+  "sensorName": "냉장2고 전기 센서",
   "sensorType": "전기",
-  "brokerId": 5
+  "brokerId": 1
 }
 
 ### 센서 목록 조회

@@ -66,7 +66,7 @@ public class TopicServiceImpl implements TopicService {
             throw new SensorNotFoundException();
         }
         Page<TopicResponse> topicResponses = topicRepository.getAllTopics(sensorId, pageable);
-        return new TopicResponseListResponse(topicResponses.getContent());
+        return new TopicResponseListResponse(topicResponses.getContent(),topicResponses.getTotalPages());
     }
 
     /**

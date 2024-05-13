@@ -15,4 +15,6 @@ import java.util.List;
 public class SensorListResponse {
 
     private final List<SensorResponse> sensors;
+
+    private final int totalPage;
 }

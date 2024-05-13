@@ -14,4 +14,5 @@ import java.util.List;
 @AllArgsConstructor
 public class TopicResponseListResponse {
     private List<TopicResponse> topics;
+    private int totalPage;
 }
