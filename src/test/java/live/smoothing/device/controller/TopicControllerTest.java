@@ -55,7 +55,7 @@ class TopicControllerTest {
     @Test
     void getTopics() throws Exception {
         int sensorId = 1;
-        TopicResponseListResponse topicResponseListResponse = new TopicResponseListResponse(List.of());
+        TopicResponseListResponse topicResponseListResponse = new TopicResponseListResponse(List.of(),1);
 
         when(topicService.getTopics(eq(sensorId), any())).thenReturn(topicResponseListResponse);
 

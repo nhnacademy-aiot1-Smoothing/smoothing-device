@@ -58,7 +58,7 @@ class SensorControllerTest {
     void getSensor() throws Exception {
         Integer brokerId = 1;
 
-        SensorListResponse sensorListResponse = new SensorListResponse(List.of());
+        SensorListResponse sensorListResponse = new SensorListResponse(List.of(),1);
 
         when(sensorService.getSensors(eq(brokerId),any())).thenReturn(sensorListResponse);
 

@@ -101,7 +101,7 @@ public class BrokerServiceImpl implements BrokerService {
     @Override
     public BrokerListResponse getBrokers(Pageable pageable) {
         Page<BrokerResponse> brokers = brokerRepository.getBrokers(pageable);
-        return new BrokerListResponse(brokers.getContent());
+        return new BrokerListResponse(brokers.getContent(), brokers.getTotalPages());
     }
 
     /**
@@ -152,7 +152,7 @@ public class BrokerServiceImpl implements BrokerService {
     @Override
     public BrokerErrorListResponse getErrors(Pageable pageable) {
         Page<BrokerErrorResponse> errors = brokerErrorLogRepository.getAllErrors(pageable);
-        return new BrokerErrorListResponse(errors.getContent());
+        return new BrokerErrorListResponse(errors.getContent(), errors.getTotalPages());
     }
 
     /**
