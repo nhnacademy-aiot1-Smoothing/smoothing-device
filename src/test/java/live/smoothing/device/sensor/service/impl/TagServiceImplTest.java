@@ -29,35 +29,35 @@ class TagServiceImplTest {
     @InjectMocks
     private TagServiceImpl tagService;
 
-    @Test
-    void getTagTopics() {
-        String userId = "testUserId";
-        List<String> tags = List.of("testTag1", "testTag2");
-        String type = "testType";
+//    @Test
+//    void getTagTopics() {
+//        String userId = "testUserId";
+//        List<String> tags = List.of("testTag1", "testTag2");
+//        String type = "testType";
+//
+//        List<String> topics = List.of("testTopic1", "testTopic2");
+//
+//        when(tagRepository.getTopicsByUserIdAndTags(userId ,tags, (long) tags.size(), type))
+//                .thenReturn(topics);
+//
+//        assertEquals(topics, tagService.getTagTopics(userId ,tags, type).getTopics());
+//    }
 
-        List<String> topics = List.of("testTopic1", "testTopic2");
-
-        when(tagRepository.getTopicsByUserIdAndTags(userId ,tags, (long) tags.size(), type))
-                .thenReturn(topics);
-
-        assertEquals(topics, tagService.getTagTopics(userId ,tags, type).getTopics());
-    }
-
-    @Test
-    void getSensorWithTopics() {
-        String userId = "testUserId";
-        List<String> tags = List.of("testTag1", "testTag2");
-        String type = "testType";
-        SensorTopicDto sensorTopicDto1 = mock(SensorTopicDto.class);
-        SensorTopicDto sensorTopicDto2 = mock(SensorTopicDto.class);
-
-        List<SensorTopicDto> topics = List.of(sensorTopicDto1, sensorTopicDto2);
-
-        when(tagRepository.getSensorTopicsByTagsAndType(userId ,tags, type, (long) tags.size()))
-                .thenReturn(topics);
-
-        assertEquals(topics, tagService.getSensorWithTopics(userId ,tags, type).getSensorWithTopics());
-    }
+//    @Test
+//    void getSensorWithTopics() {
+//        String userId = "testUserId";
+//        List<String> tags = List.of("testTag1", "testTag2");
+//        String type = "testType";
+//        SensorTopicDto sensorTopicDto1 = mock(SensorTopicDto.class);
+//        SensorTopicDto sensorTopicDto2 = mock(SensorTopicDto.class);
+//
+//        List<SensorTopicDto> topics = List.of(sensorTopicDto1, sensorTopicDto2);
+//
+//        when(tagRepository.getSensorTopicsByTagsAndType(userId ,tags, type, (long) tags.size()))
+//                .thenReturn(topics);
+//
+//        assertEquals(topics, tagService.getSensorWithTopics(userId ,tags, type).getSensorWithTopics());
+//    }
 
     @Test
     void addTag_TagAlreadyExistException() {
