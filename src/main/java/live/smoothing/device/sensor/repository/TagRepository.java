@@ -23,6 +23,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
      * @param size 태그 리스트의 크기
      * @return 사용자 아이디와 태그에 모두 해당하는 토픽 조회
      */
+    @Deprecated
     @Query("SELECT to.topic FROM Tag t " +
             "JOIN t.sensorTags st " +
             "JOIN st.sensor s " +
@@ -31,6 +32,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
             "GROUP BY to.topic HAVING COUNT(to.topic) = :size")
     List<String> getTopicsByUserIdAndTags(String userId ,List<String> tags, Long size, String type);
 
+    @Deprecated
     @Query("SELECT new live.smoothing.device.sensor.dto.SensorTopicDto(s.sensorName, to.topic) FROM Tag t " +
             "JOIN t.sensorTags st " +
             "JOIN st.sensor s " +
@@ -44,6 +46,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
     @Query("SELECT new live.smoothing.device.sensor.dto.TagResponse(t.tagId, t.tagName) FROM Tag t WHERE t.userId = :userId")
     List<TagResponse> getByUserId(String userId);
 
+    @Deprecated
     @Query("SELECT new live.smoothing.device.sensor.dao.SensorTagDao(s.sensorId, t.tagId, t.tagName) " +
             "FROM Tag t " +
             "JOIN t.sensorTags st " +
