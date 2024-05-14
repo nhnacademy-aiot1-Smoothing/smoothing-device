@@ -8,6 +8,7 @@ import live.smoothing.device.sensor.entity.Tag;
 import live.smoothing.device.sensor.exception.TagAlreadyExistException;
 import live.smoothing.device.sensor.exception.TagNotFoundException;
 import live.smoothing.device.sensor.exception.TagOwnerException;
+import live.smoothing.device.sensor.repository.CustomTagRepository;
 import live.smoothing.device.sensor.repository.SensorRepository;
 import live.smoothing.device.sensor.repository.SensorTagRepository;
 import live.smoothing.device.sensor.repository.TagRepository;
@@ -32,6 +33,7 @@ import static java.util.stream.Collectors.*;
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
+    private final CustomTagRepository customTagRepository;
     private final SensorTagRepository sensorTagRepository;
     private final SensorRepository sensorRepository;
 
@@ -40,10 +42,7 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public TopicListResponse getTagTopics(String userId ,List<String> tags, String type) {
-        if (tags.isEmpty()) {
-            return new TopicListResponse(List.of());
-        }
-        return new TopicListResponse(tagRepository.getTopicsByUserIdAndTags(userId ,tags, (long) tags.size(), type));
+        return new TopicListResponse(customTagRepository.getTopicsByUserIdAndTags(userId ,tags, (long) tags.size(), type));
     }
 
     /**
@@ -51,10 +50,7 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public SensorTopicResponse getSensorWithTopics(String userId ,List<String> tags, String type) {
-        if (tags.isEmpty()) {
-            return new SensorTopicResponse(List.of());
-        }
-        return new SensorTopicResponse(tagRepository.getSensorTopicsByTagsAndType(userId ,tags, type, (long) tags.size()));
+        return new SensorTopicResponse(customTagRepository.getSensorTopicsByTagsAndType(userId ,tags, type, (long) tags.size()));
     }
 
     /**
@@ -105,10 +101,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public SensorTagsResponse getSensorTags(String userId, List<Integer> sensorIds) {
-        if(sensorIds.isEmpty()) {
-            return new SensorTagsResponse(Map.of());
-        }
-        return new SensorTagsResponse(tagRepository.getSensorTags(userId, sensorIds).stream().collect(groupingBy(SensorTagDao::getSensorId,mapping(sensorTagDao -> new TagResponse(sensorTagDao.getTagId(), sensorTagDao.getTagName()),toList()))));
+        return new SensorTagsResponse(customTagRepository.getSensorTags(userId, sensorIds).stream().collect(groupingBy(SensorTagDao::getSensorId,mapping(sensorTagDao -> new TagResponse(sensorTagDao.getTagId(), sensorTagDao.getTagName()),toList()))));
     }
 
     @Override

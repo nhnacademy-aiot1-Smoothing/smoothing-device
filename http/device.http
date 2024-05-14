@@ -167,4 +167,7 @@ DELETE http://localhost:8005/api/device/tags/sensorTag/1/1
 X-User-ID: haha
 
 ###
-GET http://localhost:8005/api/device/topics?userId=haha&type=전력량&tags=
+GET http://localhost:8005/api/device/topics?userId=haha&type=전력량&tags=NHN,Office
+
+###
+GET http://localhost:8005/api/device/topics/sensors?userId=haha&type=전력량&tags=NHN,Office
