@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static java.util.stream.Collectors.*;
@@ -39,6 +40,9 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public TopicListResponse getTagTopics(String userId ,List<String> tags, String type) {
+        if (tags.isEmpty()) {
+            return new TopicListResponse(List.of());
+        }
         return new TopicListResponse(tagRepository.getTopicsByUserIdAndTags(userId ,tags, (long) tags.size(), type));
     }
 
@@ -47,6 +51,9 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public SensorTopicResponse getSensorWithTopics(String userId ,List<String> tags, String type) {
+        if (tags.isEmpty()) {
+            return new SensorTopicResponse(List.of());
+        }
         return new SensorTopicResponse(tagRepository.getSensorTopicsByTagsAndType(userId ,tags, type, (long) tags.size()));
     }
 
@@ -98,6 +105,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public SensorTagsResponse getSensorTags(String userId, List<Integer> sensorIds) {
+        if(sensorIds.isEmpty()) {
+            return new SensorTagsResponse(Map.of());
+        }
         return new SensorTagsResponse(tagRepository.getSensorTags(userId, sensorIds).stream().collect(groupingBy(SensorTagDao::getSensorId,mapping(sensorTagDao -> new TagResponse(sensorTagDao.getTagId(), sensorTagDao.getTagName()),toList()))));
     }
 
