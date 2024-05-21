@@ -9,14 +9,15 @@ DROP TABLE IF EXISTS BATCH_STEP_EXECUTION_SEQ;
 DROP TABLE IF EXISTS BATCH_JOB_EXECUTION_SEQ;
 DROP TABLE IF EXISTS BATCH_JOB_SEQ;
 
+DROP TABLE IF EXISTS sensor_error_logs;
 DROP TABLE IF EXISTS sensor_tags;
 DROP TABLE IF EXISTS topics;
 DROP TABLE IF EXISTS sensors;
 DROP TABLE IF EXISTS broker_error_logs;
-DROP TABLE IF EXISTS broker;
+DROP TABLE IF EXISTS brokers;
+DROP TABLE IF EXISTS protocol_types;
 DROP TABLE IF EXISTS sensor_types;
 DROP TABLE IF EXISTS topic_types;
-DROP TABLE IF EXISTS protocol_types;
 DROP TABLE IF EXISTS control_logs;
 DROP TABLE IF EXISTS control_sensors;
 DROP TABLE IF EXISTS hooks;
@@ -287,16 +288,24 @@ create table control_logs
 insert into control_logs(control_sensor_id, control_time) values (1, '2024-05-01');
 insert into control_logs(control_sensor_id, control_time) values (2, '2024-05-02');
 
-create table broker
+create table protocol_types
+(
+    protocol_type varchar(255) primary key
+);
+
+insert into protocol_types(protocol_type) values ('MQTT');
+
+create table brokers
 (
     broker_id int primary key auto_increment,
     broker_ip varchar(255),
     broker_port int,
     broker_name varchar(255),
-    protocol_type varchar(255)
+    protocol_type varchar(255),
+    foreign key (protocol_type) references protocol_types(protocol_type)
 );
 
-insert into broker(broker_ip, broker_port, broker_name, protocol_type) values ('133.186.220.105', 1883, 'Broker1', 'MQTT');
+insert into brokers(broker_ip, broker_port, broker_name, protocol_type) values ('133.186.220.105', 1883, 'Broker1', 'MQTT');
 
 create table broker_error_logs
 (
@@ -305,7 +314,7 @@ create table broker_error_logs
     broker_error_type varchar(255),
     broker_error_created_at date,
     broker_error_solved_at date,
-    foreign key (broker_id) references broker(broker_id)
+    foreign key (broker_id) references brokers(broker_id)
 );
 
 insert into broker_error_logs(broker_id, broker_error_type, broker_error_created_at, broker_error_solved_at) values (1, '연결 오류', '2024-05-01', '2024-05-02');
@@ -342,7 +351,7 @@ create table sensors
     sensor_name varchar(255),
     sensor_registered_at date,
     sensor_type varchar(255),
-    foreign key (broker_id) references broker(broker_id)
+    foreign key (broker_id) references brokers(broker_id)
 );
 
 create table topics

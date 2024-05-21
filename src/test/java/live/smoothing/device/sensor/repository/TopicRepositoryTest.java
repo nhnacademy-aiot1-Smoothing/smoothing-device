@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 class TopicRepositoryTest {
 
     @Autowired

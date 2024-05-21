@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 class SensorErrorLogRepositoryTest {
     @Autowired
     private BrokerRepository brokerRepository;

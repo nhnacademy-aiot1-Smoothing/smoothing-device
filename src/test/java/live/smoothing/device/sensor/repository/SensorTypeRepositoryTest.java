@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 class SensorTypeRepositoryTest {
 
     @Autowired

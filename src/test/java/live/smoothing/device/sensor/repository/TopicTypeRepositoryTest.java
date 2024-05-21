@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 class TopicTypeRepositoryTest {
 
     @Autowired
