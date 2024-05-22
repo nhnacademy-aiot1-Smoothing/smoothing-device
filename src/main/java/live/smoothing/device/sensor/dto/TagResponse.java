@@ -1,12 +1,12 @@
 package live.smoothing.device.sensor.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @AllArgsConstructor
-@JsonNaming(value = PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class TagResponse {
+    @JsonProperty("tagId")
     private Integer tagId;
+    @JsonProperty("tagName")
     private String tagName;
 }

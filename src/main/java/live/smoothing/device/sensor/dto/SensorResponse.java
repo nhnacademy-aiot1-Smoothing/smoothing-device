@@ -1,7 +1,6 @@
 package live.smoothing.device.sensor.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import live.smoothing.device.sensor.entity.SensorType;
 
 import java.time.LocalDateTime;
@@ -11,12 +10,15 @@ import java.time.LocalDateTime;
  *
  * @author 우혜승
  */
-@JsonNaming(value = PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class SensorResponse {
 
+    @JsonProperty("sensorId")
     private final Integer sensorId;
+    @JsonProperty("sensorType")
     private final String sensorType;
+    @JsonProperty("sensorName")
     private final String sensorName;
+    @JsonProperty("sensorRegisteredAt")
     private final String sensorRegisteredAt;
 
     public SensorResponse(Integer sensorId, SensorType sensorType, String sensorName, LocalDateTime sensorRegisteredAt) {

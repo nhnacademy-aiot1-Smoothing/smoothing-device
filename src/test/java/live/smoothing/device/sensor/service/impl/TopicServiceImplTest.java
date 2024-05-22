@@ -112,7 +112,7 @@ class TopicServiceImplTest {
         when(topicResponses.getContent()).thenReturn(topicResponseList);
 
         TopicResponseListResponse topicResponseListResponse = topicService.getTopics(sensorId, pageable);
-        assertEquals(topicResponseList, topicResponseListResponse.getTopics());
+        assertEquals(topicResponseList, ReflectionTestUtils.getField(topicResponseListResponse, "topics"));
     }
 
     @Test

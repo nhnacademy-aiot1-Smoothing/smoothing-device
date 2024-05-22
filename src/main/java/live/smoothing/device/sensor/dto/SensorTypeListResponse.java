@@ -1,7 +1,6 @@
 package live.smoothing.device.sensor.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -12,8 +11,8 @@ import java.util.List;
  * @author 우혜승
  */
 @AllArgsConstructor
-@JsonNaming(value = PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class SensorTypeListResponse {
 
+    @JsonProperty("sensorTypes")
     private List<SensorTypeResponse> sensorTypes;
 }

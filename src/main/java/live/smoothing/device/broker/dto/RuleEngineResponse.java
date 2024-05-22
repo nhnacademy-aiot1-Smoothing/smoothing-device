@@ -1,8 +1,6 @@
 package live.smoothing.device.broker.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
 import java.util.Set;
@@ -14,12 +12,16 @@ import java.util.Set;
  */
 @Builder
 @AllArgsConstructor
-@JsonNaming(value = PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class RuleEngineResponse {
 
+    @JsonProperty("brokerId")
     private Integer brokerId;
+    @JsonProperty("brokerIp")
     private String brokerIp;
+    @JsonProperty("brokerPort")
     private Integer brokerPort;
+    @JsonProperty("protocolType")
     private String protocolType;
+    @JsonProperty("topics")
     private Set<String> topics;
 }

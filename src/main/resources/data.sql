@@ -491,6 +491,25 @@ insert into topics(topic_id, topic, topic_registered_at, sensor_id, topic_type)
 values (17, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/main/ph/total/de/igr', null, 14,
         '누전');
 
+insert into sensor_tags(tag_id, sensor_id) values (1, 1);
+insert into sensor_tags(tag_id, sensor_id) values (1, 2);
+insert into sensor_tags(tag_id, sensor_id) values (1, 3);
+insert into sensor_tags(tag_id, sensor_id) values (1, 4);
+insert into sensor_tags(tag_id, sensor_id) values (1, 5);
+insert into sensor_tags(tag_id, sensor_id) values (1, 6);
+insert into sensor_tags(tag_id, sensor_id) values (1, 7);
+insert into sensor_tags(tag_id, sensor_id) values (1, 8);
+insert into sensor_tags(tag_id, sensor_id) values (1, 9);
+insert into sensor_tags(tag_id, sensor_id) values (1, 10);
+insert into sensor_tags(tag_id, sensor_id) values (2, 1);
+insert into sensor_tags(tag_id, sensor_id) values (2, 2);
+insert into sensor_tags(tag_id, sensor_id) values (2, 3);
+insert into sensor_tags(tag_id, sensor_id) values (2, 4);
+insert into sensor_tags(tag_id, sensor_id) values (2, 5);
+insert into sensor_tags(tag_id, sensor_id) values (2, 6);
+insert into sensor_tags(tag_id, sensor_id) values (2, 7);
+insert into sensor_tags(tag_id, sensor_id) values (2, 8);
+
 insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, sensor_id, topic_id) values ('연결 오류', '2024-05-01', 0.0, 1, 1);
 insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, sensor_id, topic_id) values ('연결 오류', '2024-05-02', 0.0, 2, 3);
 insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, sensor_id, topic_id) values ('연결 오류', '2024-05-03', 0.0, 3, 5);

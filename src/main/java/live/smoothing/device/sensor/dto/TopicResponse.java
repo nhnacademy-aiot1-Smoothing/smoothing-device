@@ -1,9 +1,7 @@
 package live.smoothing.device.sensor.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
  * 토픽 응답 클래스
@@ -11,11 +9,14 @@ import lombok.Getter;
  * @author 우혜승
  */
 @AllArgsConstructor
-@JsonNaming(value = PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class TopicResponse {
 
+    @JsonProperty("topicId")
     private final Integer topicId;
+    @JsonProperty("topicType")
     private final String topicType;
+    @JsonProperty("topic")
     private final String topic;
+    @JsonProperty("sensorName")
     private final String sensorName;
 }

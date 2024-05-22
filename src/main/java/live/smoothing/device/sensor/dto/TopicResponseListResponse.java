@@ -1,7 +1,7 @@
 package live.smoothing.device.sensor.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 import java.util.List;
 
@@ -10,9 +10,10 @@ import java.util.List;
  *
  * @author 우혜승
  */
-@Getter
 @AllArgsConstructor
 public class TopicResponseListResponse {
+    @JsonProperty("topics")
     private List<TopicResponse> topics;
+    @JsonProperty("totalPage")
     private int totalPage;
 }

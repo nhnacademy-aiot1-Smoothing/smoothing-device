@@ -45,7 +45,7 @@ class BrokerControllerTest {
 
     @Test
     void getBrokers() throws Exception {
-        BrokerListResponse brokerListResponse = new BrokerListResponse(List.of(), 1);
+        BrokerListResponse brokerListResponse = new BrokerListResponse(List.of(new BrokerResponse(1, "name", 1234, "test", "protocolType")), 1);
 
         when(brokerService.getBrokers(any())).thenReturn(brokerListResponse);
 
