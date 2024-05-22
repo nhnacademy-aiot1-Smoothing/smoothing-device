@@ -8,6 +8,7 @@ class DeviceApplicationTests {
 
 	@Test
 	void contextLoads() {
+		DeviceApplication.main(new String[] {});
 	}
 
 }

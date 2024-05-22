@@ -140,25 +140,27 @@ class TopicServiceImplTest {
     @Test
     void updateTopic() {
         Integer topicId = 1;
-        TopicUpdateRequest topicUpdateRequest = mock(TopicUpdateRequest.class);
-        Topic topic = mock(Topic.class);
+        TopicUpdateRequest topicUpdateRequest = new TopicUpdateRequest();
+        Topic topic = new Topic();
+        Broker broker = mock(Broker.class);
+        Sensor sensor = mock(Sensor.class);
+
         TopicType topicType = mock(TopicType.class);
 
+        ReflectionTestUtils.setField(topic, "topic", "oldTopic");
+        ReflectionTestUtils.setField(topic, "sensor", sensor);
+        when(sensor.getBroker()).thenReturn(broker);
+        when(broker.getBrokerId()).thenReturn(1);
+
+        ReflectionTestUtils.setField(topicUpdateRequest, "topic", "newTopic");
+        ReflectionTestUtils.setField(topicUpdateRequest, "topicType", "testTopicType");
         when(topicRepository.findById(topicId)).thenReturn(Optional.of(topic));
-        when(topicUpdateRequest.getTopicType()).thenReturn("testTopicType");
         when(topicTypeRepository.findById(topicUpdateRequest.getTopicType())).thenReturn(Optional.of(topicType));
-        when(topic.getTopic()).thenReturn("oldTopic");
-        when(topicUpdateRequest.getTopic()).thenReturn("newTopic");
-        when(topic.getSensor()).thenReturn(mock(Sensor.class));
-        when(topic.getSensor().getBroker()).thenReturn(mock(Broker.class));
-        when(topic.getSensor().getBroker().getBrokerId()).thenReturn(1);
         when(topicRepository.save(topic)).thenReturn(topic);
 
         topicService.updateTopic(topicId, topicUpdateRequest);
         verify(ruleEngineAdapter, times(1)).deleteTopic(any(TopicRequest.class));
         verify(ruleEngineAdapter, times(1)).addTopic(any(TopicRequest.class));
-        verify(topic, times(1)).updateTopic("newTopic");
-        verify(topic, times(1)).updateTopicType(topicType);
     }
 
     @Test
@@ -192,23 +194,26 @@ class TopicServiceImplTest {
         when(topicTypeRepository.getAllTopicTypes()).thenReturn(topicTypeResponseList);
 
         TopicTypeListResponse topicTypeListResponse = topicService.getTopicTypes();
-        assertEquals(topicTypeResponseList, topicTypeListResponse.getTopicTypes());
+        assertEquals(topicTypeResponseList, ReflectionTestUtils.getField(topicTypeListResponse, "topicTypes"));
     }
 
-//    @Test
-//    void getAllTopics() {
-//        Topic topic1 = mock(Topic.class);
-//        Topic topic2 = mock(Topic.class);
-//        String type = "testType";
-//
-//        List<Topic> topics = List.of(topic1, topic2);
-//
-//        when(topic1.getTopic()).thenReturn("testTopic1");
-//        when(topic2.getTopic()).thenReturn("testTopic2");
-//
-//        when(topicRepository.getTopicByTopicTypeTopicType(type)).thenReturn(topics);
-//
-//        TopicListResponse topicListResponse = topicService.getAllTopics(type);
-//        assertEquals(List.of("testTopic1", "testTopic2"), topicListResponse.getTopics());
-//    }
+    @Test
+    void getAllTopics() {
+        List<String> topics = List.of("testTopic1", "testTopic2");
+
+        when(topicRepository.getTopicByTopicType("testTopicType")).thenReturn(topics);
+
+        TopicListResponse topicListResponse = topicService.getAllTopics("testTopicType");
+        assertEquals(topics, ReflectionTestUtils.getField(topicListResponse, "topics"));
+    }
+
+    @Test
+    void getAllSensorWithTopicsByType() {
+        List<SensorTopicDto> sensorTopicDtos = List.of();
+
+        when(topicRepository.getSensorTopicsByTopicType("testTopicType")).thenReturn(sensorTopicDtos);
+
+        SensorTopicResponse sensorTopicResponse = topicService.getAllSensorWithTopicsByType("testTopicType");
+        assertEquals(sensorTopicDtos, ReflectionTestUtils.getField(sensorTopicResponse, "sensorWithTopics"));
+    }
 }

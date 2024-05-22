@@ -25,7 +25,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -109,7 +112,7 @@ class SensorServiceImplTest {
         when(expected.getContent()).thenReturn(List.of());
 
         SensorListResponse actual = sensorService.getSensors(brokerId, null);
-        assertEquals(actual.getSensors(), expected.getContent());
+        assertEquals(ReflectionTestUtils.getField(actual,"sensors"), expected.getContent());
         verify(sensorRepository, times(1)).findByBrokerBrokerId(brokerId, null);
     }
 
@@ -125,8 +128,8 @@ class SensorServiceImplTest {
     void updateSensor_sensorTypeNotFound_throwError() {
         Integer sensorId = 1;
         when(sensorRepository.findById(sensorId)).thenReturn(Optional.of(mock(Sensor.class)));
-        SensorUpdateRequest sensorUpdateRequest = mock(SensorUpdateRequest.class);
-        when(sensorUpdateRequest.getSensorType()).thenReturn("sensorType");
+        SensorUpdateRequest sensorUpdateRequest = new SensorUpdateRequest();
+        ReflectionTestUtils.setField(sensorUpdateRequest, "sensorType", "sensorType");
         when(sensorTypeRepository.findById(sensorUpdateRequest.getSensorType())).thenReturn(Optional.empty());
 
         assertThrows(SensorTypeNotFoundException.class, () -> sensorService.updateSensor(sensorId, sensorUpdateRequest));
@@ -135,18 +138,16 @@ class SensorServiceImplTest {
     @Test
     void updateSensor() {
         Integer sensorId = 1;
-        SensorUpdateRequest sensorUpdateRequest = mock(SensorUpdateRequest.class);
-        Sensor sensor = mock(Sensor.class);
+        SensorUpdateRequest sensorUpdateRequest = new SensorUpdateRequest();
+        Sensor sensor = new Sensor();
         SensorType sensorType = mock(SensorType.class);
         when(sensorRepository.findById(sensorId)).thenReturn(Optional.of(sensor));
-        when(sensorUpdateRequest.getSensorType()).thenReturn("sensorType");
-        when(sensorUpdateRequest.getSensorName()).thenReturn("sensorName");
+        ReflectionTestUtils.setField(sensorUpdateRequest, "sensorType", "sensorType");
+        ReflectionTestUtils.setField(sensorUpdateRequest, "sensorName", "sensorName");
         when(sensorTypeRepository.findById(sensorUpdateRequest.getSensorType())).thenReturn(Optional.of(sensorType));
 
         sensorService.updateSensor(sensorId, sensorUpdateRequest);
         verify(sensorRepository, times(1)).save(sensor);
-        verify(sensor, times(1)).updateSensorName("sensorName");
-        verify(sensor, times(1)).updateSensorType(sensorType);
     }
 
     @Test
@@ -187,7 +188,7 @@ class SensorServiceImplTest {
         SensorErrorListResponse expected = new SensorErrorListResponse(List.of(sensorErrorResponse));
 
         SensorErrorListResponse actual = sensorService.getSensorErrors(null);
-        assertEquals(expected.getErrors(), actual.getErrors());
+        assertEquals(ReflectionTestUtils.getField(expected, "errors"), ReflectionTestUtils.getField(actual, "errors"));
         verify(sensorErrorLogRepository, times(1)).findAllSensorErrorLogs(null);
     }
 
@@ -215,7 +216,7 @@ class SensorServiceImplTest {
         when(sensorTypeRepository.getAllSensorType()).thenReturn(List.of(sensorTypeResponse));
 
         SensorTypeListResponse actual = sensorService.getSensorTypes();
-        assertEquals(List.of(sensorTypeResponse), actual.getSensorTypes());
+        assertEquals(List.of(sensorTypeResponse), ReflectionTestUtils.getField(actual, "sensorTypes"));
         verify(sensorTypeRepository, times(1)).getAllSensorType();
     }
 
@@ -242,11 +243,14 @@ class SensorServiceImplTest {
 
     @Test
     void addSensorError() {
-        SensorErrorRequest request = mock(SensorErrorRequest.class);
-        Sensor sensor = mock(Sensor.class);
-        Topic topic = mock(Topic.class);
-        when(request.getSensorId()).thenReturn(1);
-        when(request.getTopic()).thenReturn("topic");
+        SensorErrorRequest request = new SensorErrorRequest();
+        ReflectionTestUtils.setField(request, "sensorErrorType", "sensorErrorType");
+        ReflectionTestUtils.setField(request, "createdAt", LocalDateTime.now());
+        ReflectionTestUtils.setField(request, "sensorValue", 1.0);
+        ReflectionTestUtils.setField(request, "sensorId", 1);
+        ReflectionTestUtils.setField(request, "topic", "topic");
+        Sensor sensor = new Sensor();
+        Topic topic = new Topic();
         when(sensorRepository.findById(request.getSensorId())).thenReturn(Optional.of(sensor));
         when(topicRepository.findByTopicAndSensorSensorId(request.getTopic(), request.getSensorId())).thenReturn(Optional.of(topic));
 

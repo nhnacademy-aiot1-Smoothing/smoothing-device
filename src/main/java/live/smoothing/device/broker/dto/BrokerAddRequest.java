@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
  * @author 우혜승
  */
 @Getter
-@NoArgsConstructor
 public class BrokerAddRequest {
 
     private String brokerIp;

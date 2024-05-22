@@ -48,6 +48,7 @@ public class TagController {
         return tagService.getSensorTags(userId, sensorIdListRequest.getSensorIds());
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/sensorTag")
     public void addSensorTag(@RequestHeader("X-USER-ID") String userId,
                              @RequestBody SensorTagAddRequest sensorTagAddRequest) {

@@ -1,6 +1,7 @@
 package live.smoothing.device.sensor.dto;
 
-import lombok.Getter;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
  *
  * @author 우혜승
  */
-@Getter
+@JsonNaming(value = PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class SensorErrorResponse {
 
     private final Integer sensorErrorId;

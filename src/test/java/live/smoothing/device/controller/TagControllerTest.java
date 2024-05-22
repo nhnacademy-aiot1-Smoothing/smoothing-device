@@ -1,8 +1,8 @@
 package live.smoothing.device.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import live.smoothing.device.sensor.dto.TagListResponse;
-import live.smoothing.device.sensor.dto.TagRequest;
+import live.smoothing.device.sensor.dto.*;
 import live.smoothing.device.sensor.service.TagService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,7 +64,7 @@ class TagControllerTest {
     }
 
     @Test
-    void updateTag() throws Exception{
+    void updateTag() throws Exception {
         int tagId = 1;
         TagRequest tagRequest = new TagRequest();
 
@@ -78,13 +78,53 @@ class TagControllerTest {
     }
 
     @Test
-    void deleteTag() {
+    void deleteTag() throws Exception {
         int tagId = 1;
 
-        assertDoesNotThrow(() -> mockMvc.perform(delete("/api/device/tags/" + tagId)
-                .header(X_USER_ID, USER_ID))
-                .andExpect(status().isOk()));
+        mockMvc.perform(delete("/api/device/tags/" + tagId)
+                        .header(X_USER_ID, USER_ID))
+                .andExpect(status().isOk());
 
         verify(tagService).deleteTag(eq(USER_ID), eq(tagId));
+    }
+
+    @Test
+    void getSensorTags() throws Exception {
+        SensorTagsResponse sensorTagsResponse = new SensorTagsResponse(null);
+        SensorIdListRequest sensorIdListRequest = new SensorIdListRequest();
+
+        when(tagService.getSensorTags(eq(USER_ID), any())).thenReturn(sensorTagsResponse);
+
+        mockMvc.perform(post("/api/device/tags/sensors")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(X_USER_ID, USER_ID)
+                        .content(objectMapper.writeValueAsString(sensorIdListRequest)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(objectMapper.writeValueAsString(sensorTagsResponse)));
+    }
+
+    @Test
+    void addSensorTag() throws Exception {
+        SensorTagAddRequest sensorTagAddRequest = new SensorTagAddRequest();
+
+        mockMvc.perform(post("/api/device/tags/sensorTag")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(X_USER_ID, USER_ID)
+                        .content(objectMapper.writeValueAsString(sensorTagAddRequest)))
+                .andExpect(status().isCreated());
+
+        verify(tagService).addSensorTag(eq(USER_ID), any(SensorTagAddRequest.class));
+    }
+
+    @Test
+    void deleteSensorTag() throws Exception {
+        int sensorId = 1;
+        int tagId = 1;
+
+        mockMvc.perform(delete("/api/device/tags/sensorTag/{sensorId}/{tagId}", sensorId, tagId)
+                        .header(X_USER_ID, USER_ID))
+                .andExpect(status().isOk());
+
+        verify(tagService).removeSensorTag(eq(USER_ID), eq(sensorId), eq(tagId));
     }
 }

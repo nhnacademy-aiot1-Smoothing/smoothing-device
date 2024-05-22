@@ -7,7 +7,6 @@ import live.smoothing.device.sensor.dao.SensorTagDao;
 import live.smoothing.device.sensor.dto.SensorTagsResponse;
 import live.smoothing.device.sensor.dto.SensorTopicDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

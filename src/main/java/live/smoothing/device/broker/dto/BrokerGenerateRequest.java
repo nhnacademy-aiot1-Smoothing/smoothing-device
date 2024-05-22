@@ -1,5 +1,6 @@
 package live.smoothing.device.broker.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 /**
@@ -7,14 +8,16 @@ import lombok.*;
  *
  * @author 우혜승
  */
-@Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BrokerGenerateRequest {
 
+    @JsonProperty("brokerIp")
     private String brokerIp;
+    @JsonProperty("brokerPort")
     private int brokerPort;
+    @JsonProperty("brokerId")
     private Integer brokerId;
+    @JsonProperty("protocolType")
     private String protocolType;
 }

@@ -1,5 +1,8 @@
 package live.smoothing.device.broker.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
 import java.util.Set;
@@ -7,12 +10,11 @@ import java.util.Set;
 /**
  * Rule Engine 초기화용 응답
  *
- * @Author 우혜승
+ * @author 우혜승
  */
-@Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@JsonNaming(value = PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class RuleEngineResponse {
 
     private Integer brokerId;

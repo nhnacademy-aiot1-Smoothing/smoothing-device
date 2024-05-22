@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ class TopicTypeRepositoryTest {
         assertAll(
                 ()-> assertNotNull(topicTypeResponses),
                 ()-> assertEquals(1, topicTypeResponses.size()),
-                ()-> assertEquals(topicType.getTopicType(), topicTypeResponses.get(0).getTopicType())
+                ()-> assertEquals(topicType.getTopicType(), ReflectionTestUtils.getField(topicTypeResponses.get(0), "topicType"))
         );
     }
 }

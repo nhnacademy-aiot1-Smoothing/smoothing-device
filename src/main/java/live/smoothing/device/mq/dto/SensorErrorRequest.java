@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
  * @author 우혜승
  */
 @Getter
-@NoArgsConstructor
 public class SensorErrorRequest {
 
     private String sensorErrorType;

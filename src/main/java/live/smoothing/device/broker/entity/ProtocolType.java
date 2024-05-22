@@ -14,7 +14,6 @@ import javax.persistence.Table;
  */
 @Getter
 @Entity
-@Builder
 @Table(name = "protocol_types")
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

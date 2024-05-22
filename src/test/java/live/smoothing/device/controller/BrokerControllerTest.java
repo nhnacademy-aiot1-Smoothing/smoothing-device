@@ -1,10 +1,7 @@
 package live.smoothing.device.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import live.smoothing.device.broker.dto.BrokerAddRequest;
-import live.smoothing.device.broker.dto.BrokerErrorListResponse;
-import live.smoothing.device.broker.dto.BrokerListResponse;
-import live.smoothing.device.broker.dto.BrokerUpdateRequest;
+import live.smoothing.device.broker.dto.*;
 import live.smoothing.device.broker.service.BrokerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -93,5 +90,16 @@ class BrokerControllerTest {
 
         mockMvc.perform(delete("/api/device/brokers/errors/" + brokerErrorId))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProtocolTypes() throws Exception {
+        ProtocolTypeResponse protocolTypeResponse = new ProtocolTypeResponse(List.of());
+
+        when(brokerService.getProtocolTypes()).thenReturn(protocolTypeResponse);
+
+        mockMvc.perform(get("/api/device/brokers/protocols"))
+                .andExpect(status().isOk())
+                .andExpect(content().bytes(objectMapper.writeValueAsBytes(protocolTypeResponse)));
     }
 }

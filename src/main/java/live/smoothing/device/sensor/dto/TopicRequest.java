@@ -8,7 +8,6 @@ import lombok.Getter;
  *
  * @author 우혜승
  */
-@Getter
 @AllArgsConstructor
 public class TopicRequest {
     private Integer brokerId;
