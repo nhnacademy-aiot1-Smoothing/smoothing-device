@@ -343,6 +343,7 @@ insert into topic_types(topic_type) values ('온도');
 insert into topic_types(topic_type) values ('습도');
 insert into topic_types(topic_type) values ('co2');
 insert into topic_types(topic_type) values ('전류');
+insert into topic_types(topic_type) values ('누전');
 
 create table sensors
 (
@@ -362,6 +363,18 @@ create table topics
     sensor_id int,
     topic_type varchar(255),
     foreign key (sensor_id) references sensors(sensor_id)
+);
+
+create table sensor_error_logs
+(
+    sensor_error_log_id int primary key auto_increment,
+    sensor_error_type varchar(255),
+    sensor_error_created_at date,
+    sensor_error_value double,
+    sensor_id int,
+    topic_id int,
+    foreign key (sensor_id) references sensors(sensor_id),
+    foreign key (topic_id) references topics(topic_id)
 );
 
 create table tags
@@ -468,3 +481,16 @@ values (13, 1, '빌트인히터', null, '전기');
 insert into topics(topic_id, topic, topic_registered_at, sensor_id, topic_type)
 values (14, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/built_in_heating/ph/kwh/de/sum',
         null, 13, '전력량');
+
+insert into sensors(sensor_id, broker_id, sensor_name, sensor_registered_at, sensor_type)
+values (14, 1, '메인', null, '전기');
+insert into topics(topic_id, topic, topic_registered_at, sensor_id, topic_type)
+values (16, 'data/s/nhnacademy/b/gyeongnam/p/class_a/d/gems-3500/e/electrical_energy/t/main/ph/total/de/igr', null, 14,
+        '누전');
+insert into topics(topic_id, topic, topic_registered_at, sensor_id, topic_type)
+values (17, 'data/s/nhnacademy/b/gyeongnam/p/office/d/gems-3500/e/electrical_energy/t/main/ph/total/de/igr', null, 14,
+        '누전');
+
+insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, sensor_id, topic_id) values ('연결 오류', '2024-05-01', 0.0, 1, 1);
+insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, sensor_id, topic_id) values ('연결 오류', '2024-05-02', 0.0, 2, 3);
+insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, sensor_id, topic_id) values ('연결 오류', '2024-05-03', 0.0, 3, 5);
