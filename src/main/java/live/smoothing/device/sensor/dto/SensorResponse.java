@@ -1,7 +1,7 @@
 package live.smoothing.device.sensor.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import live.smoothing.device.sensor.entity.SensorType;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 
@@ -10,12 +10,15 @@ import java.time.LocalDateTime;
  *
  * @author 우혜승
  */
-@Getter
 public class SensorResponse {
 
+    @JsonProperty("sensorId")
     private final Integer sensorId;
+    @JsonProperty("sensorType")
     private final String sensorType;
+    @JsonProperty("sensorName")
     private final String sensorName;
+    @JsonProperty("sensorRegisteredAt")
     private final String sensorRegisteredAt;
 
     public SensorResponse(Integer sensorId, SensorType sensorType, String sensorName, LocalDateTime sensorRegisteredAt) {

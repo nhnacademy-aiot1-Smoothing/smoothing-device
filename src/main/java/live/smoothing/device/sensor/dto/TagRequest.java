@@ -2,10 +2,8 @@ package live.smoothing.device.sensor.dto;
 
 import live.smoothing.device.sensor.entity.Tag;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class TagRequest {
 
     private String tagName;

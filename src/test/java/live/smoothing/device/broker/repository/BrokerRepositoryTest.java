@@ -7,22 +7,16 @@ import live.smoothing.device.sensor.entity.Sensor;
 import live.smoothing.device.sensor.entity.SensorType;
 import live.smoothing.device.sensor.entity.Topic;
 import live.smoothing.device.sensor.entity.TopicType;
-import live.smoothing.device.sensor.repository.SensorRepository;
-import live.smoothing.device.sensor.repository.SensorTypeRepository;
-import live.smoothing.device.sensor.repository.TopicRepository;
-import live.smoothing.device.sensor.repository.TopicTypeRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,97 +28,64 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class BrokerRepositoryTest {
 
     @Autowired
+    private TestEntityManager entityManager;
+
+    @Autowired
     private BrokerRepository brokerRepository;
 
-    @Autowired
-    private ProtocolTypeRepository protocolTypeRepository;
+    private final ProtocolType protocolType = new ProtocolType("testProtocolType");
 
-    @Autowired
-    private SensorTypeRepository sensorTypeRepository;
+    private final TopicType topicType = new TopicType("testTopicType");
 
-    @Autowired
-    private TopicTypeRepository topicTypeRepository;
+    private final SensorType sensorType = new SensorType("testSensorType");
 
-    @Autowired
-    private SensorRepository sensorRepository;
+    private final Broker broker = Broker.builder()
+            .brokerName("testBroker")
+            .brokerIp("testBrokerIp")
+            .brokerPort(1234)
+            .protocolType(protocolType)
+            .build();
 
-    @Autowired
-    private TopicRepository topicRepository;
+    private final Sensor sensor = Sensor.builder()
+            .broker(broker)
+            .sensorName("testSensor")
+            .sensorRegisteredAt(LocalDateTime.now())
+            .sensorType(sensorType)
+            .build();
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    private ProtocolType protocolType = new ProtocolType("testProtocolType");
-
-    private TopicType topicType = new TopicType("testTopicType");
-
-    private SensorType sensorType = new SensorType("testSensorType");
-
-    private Sensor sensor;
-
-    private Topic topic;
-
-    private Broker broker;
+    private final Topic topic = Topic.builder()
+            .sensor(sensor)
+            .topicType(topicType)
+            .topic("testTopic")
+            .build();
 
     @BeforeEach
     void setUp() {
-        protocolTypeRepository.save(protocolType);
-        topicTypeRepository.save(topicType);
-        sensorTypeRepository.save(sensorType);
-        broker = Broker.builder()
-                .brokerName("testBroker")
-                .brokerIp("testBrokerIp")
-                .brokerPort(1234)
-                .protocolType(protocolType)
-                .build();
-        sensor = Sensor.builder()
-                .broker(broker)
-                .sensorName("testSensor")
-                .sensorRegisteredAt(LocalDateTime.now())
-                .sensorType(sensorType)
-                .build();
-        topic = Topic.builder()
-                .sensor(sensor)
-                .topicType(topicType)
-                .topic("testTopic")
-                .build();
-    }
-
-    @AfterEach
-    void tearDown() {
-        brokerRepository.deleteAll();
-        sensorRepository.deleteAll();
-        topicRepository.deleteAll();
-    }
-
-    @Test
-    void save(){
-        Broker save = brokerRepository.save(broker);
-
-        Assertions.assertNotNull(save);
-        assertEquals(broker.getBrokerName(), save.getBrokerName());
+        entityManager.persist(protocolType);
+        entityManager.persist(topicType);
+        entityManager.persist(sensorType);
+        entityManager.persist(broker);
+        entityManager.persist(sensor);
+        entityManager.persist(topic);
+        entityManager.flush();
+        entityManager.clear();
     }
 
     @Test
     void getAllWith() {
-        brokerRepository.save(broker);
-        sensorRepository.save(sensor);
-        topicRepository.save(topic);
-
-        entityManager.flush();
-        entityManager.clear();
 
         List<Broker> brokers = brokerRepository.getAllWith();
+        System.out.println(brokers.get(0).getSensors());
+        System.out.println(brokers.get(0).getBrokerId());
         Assertions.assertAll(
-                ()-> assertEquals(1, brokers.size()),
-                ()-> assertEquals(broker.getBrokerName(), brokers.get(0).getBrokerName()),
-                ()-> assertTrue(brokers.stream().anyMatch(broker -> broker.getSensors().stream().anyMatch(sensor -> sensor.getSensorName().equals(sensor.getSensorName()))))
+                () -> assertEquals(1, brokers.size()),
+                () -> assertEquals(broker.getBrokerName(), brokers.get(0).getBrokerName()),
+                () -> assertTrue(brokers.stream().anyMatch(broker -> broker.getSensors().stream().anyMatch(sensor -> sensor.getSensorName().equals(sensor.getSensorName()))))
         );
     }
 
     @Test
     void getBrokers() {
-        brokerRepository.save(broker);
         Pageable pageable = Pageable.ofSize(10);
         Page<BrokerResponse> result = brokerRepository.getBrokers(pageable);
 

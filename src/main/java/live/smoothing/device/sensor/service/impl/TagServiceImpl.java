@@ -5,6 +5,7 @@ import live.smoothing.device.sensor.dto.*;
 import live.smoothing.device.sensor.entity.Sensor;
 import live.smoothing.device.sensor.entity.SensorTag;
 import live.smoothing.device.sensor.entity.Tag;
+import live.smoothing.device.sensor.exception.SensorTagAlreadyExistException;
 import live.smoothing.device.sensor.exception.TagAlreadyExistException;
 import live.smoothing.device.sensor.exception.TagNotFoundException;
 import live.smoothing.device.sensor.exception.TagOwnerException;
@@ -107,7 +108,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public void addSensorTag(String userId, SensorTagAddRequest sensorTagAddRequest) {
         if(sensorTagRepository.existsByTagTagIdAndSensorSensorId(sensorTagAddRequest.getTagId(), sensorTagAddRequest.getSensorId())) {
-            throw new TagAlreadyExistException();
+            throw new SensorTagAlreadyExistException();
         }
         SensorTag sensorTag = SensorTag.builder()
                 .tag(tagRepository.getReferenceById(sensorTagAddRequest.getTagId()))

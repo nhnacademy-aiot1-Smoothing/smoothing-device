@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -36,9 +37,7 @@ class DeviceControllerTest {
 
     @Test
     void getInitialization() throws Exception {
-        Constructor<RuleEngineResponse> constructor = RuleEngineResponse.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        RuleEngineResponse ruleEngineResponse = constructor.newInstance();
+        RuleEngineResponse ruleEngineResponse = new RuleEngineResponse(123, "brokerIp", 123, "protocolType", Set.of("topics"));
 
         when(brokerService.getInitBrokers()).thenReturn(List.of(ruleEngineResponse));
 

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -84,7 +85,7 @@ class TopicRepositoryTest {
         assertAll(
                 ()->assertEquals(2, allTopics.getTotalElements()),
                 ()->assertEquals(1, allTopics.getTotalPages()),
-                ()->assertTrue(allTopics.stream().map(TopicResponse::getTopic).collect(Collectors.toList()).containsAll(List.of("testTopic1", "testTopic2"))
+                ()->assertTrue(allTopics.stream().map(topicResponse -> ReflectionTestUtils.getField(topicResponse,"topic")).collect(Collectors.toList()).containsAll(List.of("testTopic1", "testTopic2"))
                 ));
     }
 

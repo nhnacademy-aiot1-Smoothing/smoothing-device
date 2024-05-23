@@ -1,7 +1,7 @@
 package live.smoothing.device.broker.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 
@@ -10,15 +10,21 @@ import java.time.LocalDateTime;
  *
  * @author 우혜승
  */
-@Getter
 public class BrokerErrorResponse {
 
+    @JsonProperty("brokerErrorId")
     private final Integer brokerErrorId;
+    @JsonProperty("brokerErrorType")
     private final String brokerErrorType;
+    @JsonProperty("brokerName")
     private final String brokerName;
+    @JsonProperty("createdAt")
     private final String createdAt;
+    @JsonProperty("solvedAt")
     private final String solvedAt;
+    @JsonProperty("brokerIp")
     private final String brokerIp;
+    @JsonProperty("brokerPort")
     private final Integer brokerPort;
 
     /**

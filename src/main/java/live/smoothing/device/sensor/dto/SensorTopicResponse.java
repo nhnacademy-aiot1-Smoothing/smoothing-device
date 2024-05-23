@@ -1,12 +1,12 @@
 package live.smoothing.device.sensor.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 import java.util.List;
 
-@Getter
 @AllArgsConstructor
 public class SensorTopicResponse {
+    @JsonProperty("sensorWithTopics")
     private List<SensorTopicDto> sensorWithTopics;
 }

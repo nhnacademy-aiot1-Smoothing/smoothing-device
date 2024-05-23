@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @Table(name = "topics")
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Topic {
 
     @Id

@@ -38,4 +38,5 @@ public class BrokerErrorLog {
 
     @Column(name = "broker_error_solved_at")
     private LocalDateTime brokerErrorSolvedAt;
+
 }

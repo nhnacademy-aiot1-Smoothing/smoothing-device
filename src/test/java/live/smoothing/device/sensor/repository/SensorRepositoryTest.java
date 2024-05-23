@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -96,7 +97,7 @@ class SensorRepositoryTest {
         Page<SensorResponse> found = sensorRepository.findByBrokerBrokerId(broker.getBrokerId(), Pageable.ofSize(10));
 
         assertEquals(1, found.getTotalElements());
-        assertEquals(saved.getSensorName(), found.getContent().get(0).getSensorName());
+        assertEquals(saved.getSensorName(), ReflectionTestUtils.getField(found.getContent().get(0), "sensorName"));
     }
 
     @Test

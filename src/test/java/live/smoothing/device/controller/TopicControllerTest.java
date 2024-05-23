@@ -145,4 +145,17 @@ class TopicControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().bytes(objectMapper.writeValueAsBytes(sensorTopicResponse)));
     }
+
+    @Test
+    void getAllSensorWithTopics() throws Exception {
+        SensorTopicResponse sensorTopicResponse = new SensorTopicResponse(List.of());
+        String type = "type";
+
+        when(topicService.getAllSensorWithTopicsByType(eq(type))).thenReturn(sensorTopicResponse);
+
+        mockMvc.perform(get("/api/device/topics/sensors/all")
+                        .param("type", type))
+                .andExpect(status().isOk())
+                .andExpect(content().bytes(objectMapper.writeValueAsBytes(sensorTopicResponse)));
+    }
 }
