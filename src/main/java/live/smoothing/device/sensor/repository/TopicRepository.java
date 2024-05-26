@@ -26,6 +26,9 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
      */
     boolean existsTopicByTopic(String topic);
 
+    @Query("SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END FROM Topic t JOIN t.sensor s JOIN s.broker b WHERE t.topic = :topic AND s.sensorId = :sensorId")
+    boolean existsTopicByTopicAndSensorSensorId(String topic, Integer sensorId);
+
     /**
      * 센서 아이디로 토픽 조회
      *

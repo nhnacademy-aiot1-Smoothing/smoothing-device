@@ -18,6 +18,7 @@ import live.smoothing.device.sensor.dto.TopicRequest;
 import live.smoothing.device.sensor.entity.Topic;
 import live.smoothing.device.sensor.repository.TopicRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
  *
  * @author 우혜승
  */
+@Slf4j
 @AllArgsConstructor
 @Service("brokerService")
 public class BrokerServiceImpl implements BrokerService {
@@ -87,12 +89,16 @@ public class BrokerServiceImpl implements BrokerService {
                 .build();
         broker = brokerRepository.save(broker);
 
-        ruleEngineAdapter.addBroker(BrokerGenerateRequest.builder()
-                .brokerId(broker.getBrokerId())
-                .brokerIp(broker.getBrokerIp())
-                .brokerPort(broker.getBrokerPort())
-                .protocolType(protocolType.getProtocolType())
-                .build());
+        try {
+            ruleEngineAdapter.addBroker(BrokerGenerateRequest.builder()
+                    .brokerId(broker.getBrokerId())
+                    .brokerIp(broker.getBrokerIp())
+                    .brokerPort(broker.getBrokerPort())
+                    .protocolType(protocolType.getProtocolType())
+                    .build());
+        }catch (Exception e) {
+        log.error("Rule Engine Broker Add Error : {}", e.getMessage());
+        }
     }
 
     /**

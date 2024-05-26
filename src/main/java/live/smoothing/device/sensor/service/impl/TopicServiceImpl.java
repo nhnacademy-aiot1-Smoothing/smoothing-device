@@ -14,6 +14,7 @@ import live.smoothing.device.sensor.repository.TopicRepository;
 import live.smoothing.device.sensor.repository.TopicTypeRepository;
 import live.smoothing.device.sensor.service.TopicService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
  *
  * @author 우혜승
  */
+@Slf4j
 @Service("topicService")
 @RequiredArgsConstructor
 public class TopicServiceImpl implements TopicService {
@@ -41,7 +43,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     @Transactional
     public void saveTopic(TopicAddRequest topicAddRequest) {
-        if(topicRepository.existsTopicByTopic(topicAddRequest.getTopic())) {
+        if(topicRepository.existsTopicByTopicAndSensorSensorId(topicAddRequest.getTopic(), topicAddRequest.getSensorId())) {
             throw new TopicAlreadyExistException();
         }
         TopicType topicType = topicTypeRepository.findById(topicAddRequest.getTopicType())
@@ -54,7 +56,11 @@ public class TopicServiceImpl implements TopicService {
 
         topic = topicRepository.save(topic);
 
-        ruleEngineAdapter.addTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
+        try {
+            ruleEngineAdapter.addTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
+        }catch (Exception e) {
+            log.error("Rule Engine에 토픽 추가 실패", e);
+        }
     }
 
     /**
