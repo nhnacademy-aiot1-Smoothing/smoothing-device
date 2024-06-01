@@ -1,0 +1,185 @@
+### 초기화
+GET http://localhost:8005/api/device/initialization
+
+### 토픽 등록
+POST http://localhost:8005/api/device/topics
+Content-Type: application/json
+
+{
+  "topic": "#",
+  "topicType": "전력",
+  "sensorId": 16
+}
+
+### 토픽 목록 조회
+GET http://localhost:8005/api/device/topics/14
+
+### 토픽 수정
+PUT http://localhost:8005/api/device/topics/1
+Content-Type: application/json
+
+{
+  "topic": "data/s/nhnacademy/d/gems-3500/e/eletric",
+  "topicType": "전압"
+}
+
+### 토픽 삭제
+DELETE http://localhost:8005/api/device/topics/19
+
+### 토픽 타입 목록 조회
+GET http://localhost:8005/api/device/topics/types
+
+### 센서 등록
+POST http://localhost:8005/api/device/sensors
+Content-Type: application/json
+
+{
+  "sensorName": "냉장2고 전기 센서",
+  "sensorType": "전기",
+  "brokerId": 4
+}
+
+### 센서 목록 조회
+GET http://localhost:8005/api/device/sensors/4
+
+### 센서 수정
+PUT http://localhost:8005/api/device/sensors/1
+Content-Type: application/json
+
+{
+  "sensorName": "냉장고 온도 센서",
+  "sensorType": "온도"
+}
+
+### 센서 삭제
+DELETE http://localhost:8005/api/device/sensors/14
+
+### 센서 에러 목록
+GET http://localhost:8005/api/device/sensors/errors
+
+### 센서 에러 삭제
+DELETE http://localhost:8005/api/device/sensors/errors/1
+
+### 센서 타입 목록 조회
+GET http://localhost:8005/api/device/sensors/types
+
+### 브로커 등록
+POST http://localhost:8005/api/device/brokers
+Content-Type: application/json
+
+{
+  "brokerIp": "133.186.153.19",
+  "brokerPort": 1883,
+  "brokerName": "broker1",
+  "protocolType": "MQTT"
+}
+
+### 브로커 목록 조회
+GET http://localhost:8005/api/device/brokers?page=0&size=10
+
+### 브로커 수정
+PUT http://localhost:8005/api/device/brokers/1
+Content-Type: application/json
+
+{
+  "brokerIp": "133.186.153.19",
+  "brokerPort": 1883,
+  "brokerName": "broker2",
+  "protocolType": "MQTT"
+}
+
+### 브로커 삭제
+DELETE http://localhost:8005/api/device/brokers/1
+
+### 브로커 에러 목록 조회
+GET http://localhost:8005/api/device/brokers/errors
+
+### 브로커 에러 삭제
+DELETE http://localhost:8005/api/device/brokers/errors/1
+
+### 태그 조회
+GET http://localhost:8005/api/device/topics?tags=NHN,Office&type=전력량&userId=haha
+
+### 모든 토픽 조회
+GET http://localhost:8005/api/device/topics/all?type=전력량
+
+### 센서, 토픽 조회
+GET http://localhost:8005/api/device/topics/sensors?type=전력량&tags=NHN,Office&userId=haha
+
+### 태그 등록
+POST http://localhost:8005/api/device/tags
+X-User-ID: haha
+Content-Type: application/json
+
+{
+  "tagName": "NHN2"
+}
+
+### 태그 목록 조회
+GET http://localhost:8005/api/device/tags
+X-User-ID: haha
+
+### 태그 수정
+PUT http://localhost:8005/api/device/tags/5
+X-User-ID: haha
+Content-Type: application/json
+
+{
+  "tagName": "테스트"
+}
+
+### 태그 삭제
+DELETE http://localhost:8005/api/device/tags/3
+X-User-ID: haha
+
+### 프로토콜 타입 목록 조회
+GET http://localhost:8005/api/device/brokers/protocols
+
+### 타입으로 토픽 센서 조회
+GET http://localhost:8005/api/device/topics/sensors/all?type=전력
+
+### 프로토콜 타입 목록 조회
+GET http://localhost:8005/api/device/brokers/protocols
+
+### 센서 태그 목록 조회
+POST http://localhost:8005/api/device/tags/sensors
+X-User-ID: haha
+Content-Type: application/json
+
+{
+  "sensorIds": [
+    1, 2
+  ]
+}
+
+### 센서 태그 등록
+POST http://localhost:8005/api/device/tags/sensorTag
+X-User-ID: haha
+Content-Type: application/json
+
+{
+  "sensorId": 1,
+  "tagId": 2
+}
+
+### 센서 태그 삭제
+DELETE http://localhost:8005/api/device/tags/sensorTag/1/1
+X-User-ID: haha
+
+###
+GET http://localhost:8005/api/device/topics?userId=haha&type=전력량&tags=NHN,Office
+
+###
+GET http://localhost:8005/api/device/topics/sensors?userId=haha&type=전력량&tags=NHN,Office
+
+
+### 브로커 등록222
+POST http://localhost:8005/api/device/brokers
+Content-Type: application/json
+
+{
+  "brokerIp": "133.186.229.200",
+  "brokerPort": 1883,
+  "brokerName": "broker1",
+  "protocolType": "MQTT"
+}
