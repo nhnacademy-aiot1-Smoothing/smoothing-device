@@ -28,7 +28,7 @@ public class DeviceController {
     @GetMapping("/initialization")
     public ResponseEntity<List<RuleEngineResponse>> getInitialization() {
 
-        return ResponseEntity.ok(brokerService.getInitBrokers());
+        return ResponseEntity.ok(brokerService.getBrokersWithTopics());
     }
 
 }

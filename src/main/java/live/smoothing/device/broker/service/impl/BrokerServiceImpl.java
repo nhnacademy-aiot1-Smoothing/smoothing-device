@@ -1,5 +1,6 @@
 package live.smoothing.device.broker.service.impl;
 
+import feign.FeignException;
 import live.smoothing.device.adapter.RuleEngineAdapter;
 import live.smoothing.device.broker.dto.*;
 import live.smoothing.device.broker.entity.Broker;
@@ -31,9 +32,9 @@ import java.util.stream.Collectors;
 
 /**
  * 브로커 서비스
- * @see BrokerService 구현체
  *
  * @author 우혜승
+ * @see BrokerService 구현체
  */
 @Slf4j
 @AllArgsConstructor
@@ -50,7 +51,7 @@ public class BrokerServiceImpl implements BrokerService {
      * @inheritDoc
      */
     @Override
-    public List<RuleEngineResponse> getInitBrokers() {
+    public List<RuleEngineResponse> getBrokersWithTopics() {
         List<Broker> brokers = brokerRepository.getAllWith();
         List<RuleEngineResponse> responses = new LinkedList<>();
         for (Broker broker : brokers) {
@@ -76,7 +77,7 @@ public class BrokerServiceImpl implements BrokerService {
         ProtocolType protocolType = protocolTypeRepository.findById(request.getProtocolType())
                 .orElseThrow(ProtocolTypeNotFoundException::new);
 
-        if(brokerRepository.existsByBrokerIpAndBrokerPort(request.getBrokerIp(), request.getBrokerPort())) {
+        if (brokerRepository.existsByBrokerIpAndBrokerPort(request.getBrokerIp(), request.getBrokerPort())) {
             throw new AlreadyExistBroker();
         }
 
@@ -89,16 +90,16 @@ public class BrokerServiceImpl implements BrokerService {
                 .build();
         broker = brokerRepository.save(broker);
 
-//        try {
+        try {
             ruleEngineAdapter.addBroker(BrokerGenerateRequest.builder()
                     .brokerId(broker.getBrokerId())
                     .brokerIp(broker.getBrokerIp())
                     .brokerPort(broker.getBrokerPort())
                     .protocolType(protocolType.getProtocolType())
                     .build());
-//        }catch (Exception e) {
-//        log.error("Rule Engine Broker Add Error : {}", e.getMessage());
-//        }
+        } catch (FeignException e) {
+            log.error("RuleEngine 맛탱이감");
+        }
     }
 
     /**
@@ -127,16 +128,21 @@ public class BrokerServiceImpl implements BrokerService {
         broker.updateProtocolType(protocolType);
         broker = brokerRepository.save(broker);
 
-        ruleEngineAdapter.deleteBroker(brokerId);
-        ruleEngineAdapter.addBroker(BrokerGenerateRequest.builder()
-                .brokerId(broker.getBrokerId())
-                .brokerIp(broker.getBrokerIp())
-                .brokerPort(broker.getBrokerPort())
-                .protocolType(protocolType.getProtocolType())
-                .build());
-        List<Topic> topics = topicRepository.getTopicBySensorBrokerBrokerId(brokerId);
-        for(Topic topic : topics) {
-            ruleEngineAdapter.addTopic(new TopicRequest(brokerId, topic.getTopic()));
+        try {
+
+            ruleEngineAdapter.deleteBroker(brokerId);
+            ruleEngineAdapter.addBroker(BrokerGenerateRequest.builder()
+                    .brokerId(broker.getBrokerId())
+                    .brokerIp(broker.getBrokerIp())
+                    .brokerPort(broker.getBrokerPort())
+                    .protocolType(protocolType.getProtocolType())
+                    .build());
+            List<Topic> topics = topicRepository.getTopicBySensorBrokerBrokerId(brokerId);
+            for (Topic topic : topics) {
+                ruleEngineAdapter.addTopic(new TopicRequest(brokerId, topic.getTopic()));
+            }
+        } catch (FeignException e) {
+            log.error("RuleEngine 맛탱이감");
         }
     }
 
@@ -149,7 +155,11 @@ public class BrokerServiceImpl implements BrokerService {
         Broker broker = brokerRepository.findById(brokerId)
                 .orElseThrow(BrokerNotFoundException::new);
         brokerRepository.delete(broker);
-        ruleEngineAdapter.deleteBroker(brokerId);
+        try {
+            ruleEngineAdapter.deleteBroker(brokerId);
+        } catch (FeignException e) {
+            log.error("RuleEngine 맛탱이감");
+        }
     }
 
     /**

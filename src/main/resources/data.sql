@@ -36,6 +36,9 @@ DROP TABLE IF EXISTS achievements;
 DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS goals;
+DROP TABLE IF EXISTS control_elements;
+DROP TABLE IF EXISTS control_devices;
+DROP TABLE IF EXISTS control_history;
 
 
 create table users
@@ -46,7 +49,7 @@ create table users
     user_email    varchar(255),
     user_state    varchar(255),
     user_point    bigint,
-    last_access   date
+    last_access   datetime
 );
 
 insert into users(user_id, user_password, user_name, user_email, user_state, user_point, last_access) values ('haha', '$2a$10$g38.MY8e2hL9FgJL1vEpI.8uXmghZJadgmpTDNcQZmivY0GSLOrii', 'haha','haha@gmail.com','APPROVED', 1000000, null);
@@ -178,7 +181,7 @@ create table point_details
     user_id varchar(255),
     point_detail_amount bigint,
     point_detail_type varchar(255),
-    point_record_date date,
+    point_record_date datetime,
     foreign key (user_id) references users(user_id)
 );
 
@@ -283,7 +286,7 @@ create table control_logs
 (
     control_log_id int primary key auto_increment,
     control_sensor_id int,
-    control_time date,
+    control_time datetime,
     foreign key (control_sensor_id) references control_sensors(control_sensor_id)
 );
 
@@ -314,9 +317,9 @@ create table broker_error_logs
     broker_error_log_id int primary key auto_increment,
     broker_id int,
     broker_error_type varchar(255),
-    broker_error_created_at date,
-    broker_error_solved_at date,
-    foreign key (broker_id) references brokers(broker_id)
+    broker_error_created_at datetime,
+    broker_error_solved_at datetime,
+    foreign key (broker_id) references brokers(broker_id) on delete cascade
 );
 
 insert into broker_error_logs(broker_id, broker_error_type, broker_error_created_at, broker_error_solved_at) values (1, '연결 오류', '2024-05-01', '2024-05-02');
@@ -352,31 +355,31 @@ create table sensors
     sensor_id int primary key auto_increment,
     broker_id int,
     sensor_name varchar(255),
-    sensor_registered_at date,
+    sensor_registered_at datetime,
     sensor_type varchar(255),
-    foreign key (broker_id) references brokers(broker_id)
+    foreign key (broker_id) references brokers(broker_id) on delete cascade
 );
 
 create table topics
 (
     topic_id int primary key auto_increment,
     topic varchar(255),
-    topic_registered_at date,
+    topic_registered_at datetime,
     sensor_id int,
     topic_type varchar(255),
-    foreign key (sensor_id) references sensors(sensor_id)
+    foreign key (sensor_id) references sensors(sensor_id) on delete cascade
 );
 
 create table sensor_error_logs
 (
     sensor_error_log_id int primary key auto_increment,
     sensor_error_type varchar(255),
-    sensor_error_created_at date,
+    sensor_error_created_at datetime,
     sensor_error_value double,
     sensor_id int,
     topic_id int,
-    foreign key (sensor_id) references sensors(sensor_id),
-    foreign key (topic_id) references topics(topic_id)
+    foreign key (sensor_id) references sensors(sensor_id) on delete cascade,
+    foreign key (topic_id) references topics(topic_id) on delete cascade
 );
 
 create table tags
@@ -395,9 +398,38 @@ create table sensor_tags
     sensor_tag_id int primary key auto_increment,
     tag_id int,
     sensor_id int,
-    foreign key (tag_id) references tags(tag_id),
-    foreign key (sensor_id) references sensors(sensor_id)
+    foreign key (tag_id) references tags(tag_id) on delete cascade,
+    foreign key (sensor_id) references sensors(sensor_id) on delete cascade
 );
+
+CREATE TABLE control_devices (
+                                 device_id VARCHAR(255) PRIMARY KEY,
+                                 name VARCHAR(255)
+);
+
+CREATE TABLE control_elements (
+                                  element_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                  place VARCHAR(255),
+                                  device VARCHAR(255),
+                                  event VARCHAR(255),
+                                  device_id VARCHAR(255),
+                                  FOREIGN KEY (device_id) REFERENCES control_devices(device_id)
+);
+
+CREATE TABLE control_history (
+                                 id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                 eui VARCHAR(255),
+                                 time TIMESTAMP,
+                                 message VARCHAR(255)
+);
+
+INSERT INTO control_devices (device_id, name) VALUES ('24E124445C408915', 'classA 에어컨 디바이스');
+INSERT INTO control_devices (device_id, name) VALUES ('24E124445C408914', 'classA 조명 디바이스');
+INSERT INTO control_devices (device_id, name) VALUES ('24E124445C408916', '');
+
+INSERT INTO control_elements (place, device, event, device_id) VALUES ('class_a', 'ws301', 'magnet_status', '24E124445C408915');
+INSERT INTO control_elements (place, device, event, device_id) VALUES ('class_a', '24e124128c067999', 'illumination', '24E124445C408914');
+INSERT INTO control_elements (place, device, event, device_id) VALUES ('class_a', 'vs121', 'occupancy', '24E124445C408916');
 
 insert into sensors(sensor_id, broker_id, sensor_name, sensor_registered_at, sensor_type)
 values (1, 1, '에어컨', null, '전기');

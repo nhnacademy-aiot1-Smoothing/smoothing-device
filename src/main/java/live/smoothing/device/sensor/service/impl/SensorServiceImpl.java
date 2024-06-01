@@ -1,6 +1,8 @@
 package live.smoothing.device.sensor.service.impl;
 
+import feign.FeignException;
 import live.smoothing.device.adapter.RuleEngineAdapter;
+import live.smoothing.device.aop.annotation.Flagging;
 import live.smoothing.device.broker.entity.Broker;
 import live.smoothing.device.broker.exception.BrokerNotFoundException;
 import live.smoothing.device.broker.repository.BrokerRepository;
@@ -73,7 +75,7 @@ public class SensorServiceImpl implements SensorService {
      */
     @Override
     public SensorListResponse getSensors(Integer brokerId, Pageable pageable) {
-        if(!brokerRepository.existsById(brokerId)) {
+        if (!brokerRepository.existsById(brokerId)) {
             throw new BrokerNotFoundException();
         }
         Page<SensorResponse> sensorResponses = sensorRepository.findByBrokerBrokerId(brokerId, pageable);
@@ -106,8 +108,12 @@ public class SensorServiceImpl implements SensorService {
                 .orElseThrow(SensorNotFoundException::new);
         sensorRepository.delete(sensor);
 
-        for(Topic t : sensor.getTopics()) {
-            ruleEngineAdapter.deleteTopic(new TopicRequest(sensor.getBroker().getBrokerId(), t.getTopic()));
+        try {
+            for (Topic t : sensor.getTopics()) {
+                ruleEngineAdapter.deleteTopic(new TopicRequest(sensor.getBroker().getBrokerId(), t.getTopic()));
+            }
+        } catch (FeignException e) {
+            log.error("RuleEngine 맛탱이감");
         }
     }
 
@@ -142,15 +148,16 @@ public class SensorServiceImpl implements SensorService {
      * @inheritDoc
      */
     @Override
+    @Transactional
     public void addSensorError(SensorErrorRequest request) {
         Optional<Sensor> sensor = sensorRepository.findById(request.getSensorId());
-        if(sensor.isEmpty()) {
+        if (sensor.isEmpty()) {
             log.error("Sensor not found with id: {}", request.getSensorId());
             return;
         }
 
         Optional<Topic> topic = topicRepository.findByTopicAndSensorSensorId(request.getTopic(), request.getSensorId());
-        if(topic.isEmpty()) {
+        if (topic.isEmpty()) {
             log.error("Topic not found with topic: {} and sensorId: {}", request.getTopic(), request.getSensorId());
             return;
         }

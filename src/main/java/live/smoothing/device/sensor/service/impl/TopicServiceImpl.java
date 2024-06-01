@@ -1,5 +1,6 @@
 package live.smoothing.device.sensor.service.impl;
 
+import feign.FeignException;
 import live.smoothing.device.adapter.RuleEngineAdapter;
 import live.smoothing.device.sensor.dto.TopicResponseListResponse;
 import live.smoothing.device.sensor.dto.*;
@@ -20,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.stream.Collectors;
 
 /**
  * 토픽 서비스 구현체<br>
@@ -43,7 +43,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     @Transactional
     public void saveTopic(TopicAddRequest topicAddRequest) {
-        if(topicRepository.existsTopicByTopicAndSensorSensorId(topicAddRequest.getTopic(), topicAddRequest.getSensorId())) {
+        if (topicRepository.existsTopicByTopicAndSensorSensorId(topicAddRequest.getTopic(), topicAddRequest.getSensorId())) {
             throw new TopicAlreadyExistException();
         }
         TopicType topicType = topicTypeRepository.findById(topicAddRequest.getTopicType())
@@ -58,8 +58,8 @@ public class TopicServiceImpl implements TopicService {
 
         try {
             ruleEngineAdapter.addTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
-        }catch (Exception e) {
-            log.error("Rule Engine에 토픽 추가 실패", e);
+        } catch (FeignException e) {
+            log.error("RuleEngine 맛탱이감");
         }
     }
 
@@ -68,11 +68,11 @@ public class TopicServiceImpl implements TopicService {
      */
     @Override
     public TopicResponseListResponse getTopics(Integer sensorId, Pageable pageable) {
-        if(sensorRepository.findById(sensorId).isEmpty()) {
+        if (sensorRepository.findById(sensorId).isEmpty()) {
             throw new SensorNotFoundException();
         }
         Page<TopicResponse> topicResponses = topicRepository.getAllTopics(sensorId, pageable);
-        return new TopicResponseListResponse(topicResponses.getContent(),topicResponses.getTotalPages());
+        return new TopicResponseListResponse(topicResponses.getContent(), topicResponses.getTotalPages());
     }
 
     /**
@@ -93,8 +93,12 @@ public class TopicServiceImpl implements TopicService {
         topic.updateTopicType(topicType);
         topic = topicRepository.save(topic);
 
-        ruleEngineAdapter.deleteTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), oldTopic));
-        ruleEngineAdapter.addTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
+        try {
+            ruleEngineAdapter.deleteTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), oldTopic));
+            ruleEngineAdapter.addTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
+        } catch (FeignException e) {
+            log.error("RuleEngine 맛탱이감");
+        }
     }
 
     /**
@@ -107,7 +111,11 @@ public class TopicServiceImpl implements TopicService {
                 .orElseThrow(() -> new TopicNotFoundException());
         topicRepository.delete(topic);
 
-        ruleEngineAdapter.deleteTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
+        try {
+            ruleEngineAdapter.deleteTopic(new TopicRequest(topic.getSensor().getBroker().getBrokerId(), topic.getTopic()));
+        } catch (FeignException e) {
+            log.error("RuleEngine 맛탱이감");
+        }
     }
 
     /**

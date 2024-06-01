@@ -1,5 +1,6 @@
 package live.smoothing.device.sensor.service.impl;
 
+import live.smoothing.device.aop.annotation.Flagging;
 import live.smoothing.device.sensor.dao.SensorTagDao;
 import live.smoothing.device.sensor.dto.*;
 import live.smoothing.device.sensor.entity.Sensor;
