@@ -11,12 +11,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -39,7 +36,7 @@ class DeviceControllerTest {
     void getInitialization() throws Exception {
         RuleEngineResponse ruleEngineResponse = new RuleEngineResponse(123, "brokerIp", 123, "protocolType", Set.of("topics"));
 
-        when(brokerService.getInitBrokers()).thenReturn(List.of(ruleEngineResponse));
+        when(brokerService.getBrokersWithTopics()).thenReturn(List.of(ruleEngineResponse));
 
         mockMvc.perform(get("/api/device/initialization"))
                 .andExpect(status().isOk())

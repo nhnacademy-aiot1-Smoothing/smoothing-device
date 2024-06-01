@@ -19,7 +19,7 @@ public interface BrokerService {
      * Rule Engine Service를 초기화하기 위한 브로커 정보 조회
      * @return 브로커 정보 리스트
      */
-    List<RuleEngineResponse> getInitBrokers();
+    List<RuleEngineResponse> getBrokersWithTopics();
 
     /**
      * 브로커 추가

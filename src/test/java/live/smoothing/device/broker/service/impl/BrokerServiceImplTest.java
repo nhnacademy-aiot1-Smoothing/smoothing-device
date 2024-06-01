@@ -56,7 +56,7 @@ class BrokerServiceImplTest {
     private BrokerServiceImpl brokerService;
 
     @Test
-    void getInitBrokers() {
+    void getBrokersWithTopics() {
         List<Broker> brokers = List.of(
                 Broker.builder()
                         .brokerId(1)
@@ -102,7 +102,7 @@ class BrokerServiceImplTest {
 
         );
         when(brokerRepository.getAllWith()).thenReturn(brokers);
-        List<RuleEngineResponse> result = brokerService.getInitBrokers();
+        List<RuleEngineResponse> result = brokerService.getBrokersWithTopics();
         assertAll(
                 () -> assertEquals(2, result.size()),
                 () -> assertTrue(result.stream().anyMatch(response -> Objects.equals(ReflectionTestUtils.getField(response, "brokerIp"), "123.456.789.0"))),
