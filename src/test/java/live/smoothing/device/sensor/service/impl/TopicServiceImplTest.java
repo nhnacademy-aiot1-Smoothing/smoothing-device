@@ -54,7 +54,7 @@ class TopicServiceImplTest {
         TopicAddRequest topicAddRequest = mock(TopicAddRequest.class);
 
         when(topicAddRequest.getTopic()).thenReturn("testTopic");
-        when(topicRepository.existsTopicByTopic(topicAddRequest.getTopic())).thenReturn(true);
+        when(topicRepository.existsTopicByTopicAndSensorSensorId(topicAddRequest.getTopic(),topicAddRequest.getSensorId())).thenReturn(true);
 
         assertThrows(TopicAlreadyExistException.class, () -> topicService.saveTopic(topicAddRequest));
     }
@@ -64,7 +64,7 @@ class TopicServiceImplTest {
         TopicAddRequest topicAddRequest = mock(TopicAddRequest.class);
 
         when(topicAddRequest.getTopic()).thenReturn("testTopic");
-        when(topicRepository.existsTopicByTopic(topicAddRequest.getTopic())).thenReturn(false);
+        when(topicRepository.existsTopicByTopicAndSensorSensorId(topicAddRequest.getTopic(),topicAddRequest.getSensorId())).thenReturn(false);
         when(topicTypeRepository.findById(topicAddRequest.getTopicType())).thenReturn(Optional.empty());
 
         assertThrows(TopicTypeNotExistException.class, () -> topicService.saveTopic(topicAddRequest));
@@ -76,7 +76,7 @@ class TopicServiceImplTest {
         Topic topic = mock(Topic.class);
 
         when(topicAddRequest.getTopic()).thenReturn("testTopic");
-        when(topicRepository.existsTopicByTopic(topicAddRequest.getTopic())).thenReturn(false);
+        when(topicRepository.existsTopicByTopicAndSensorSensorId(topicAddRequest.getTopic(),topicAddRequest.getSensorId())).thenReturn(false);
         when(sensorRepository.getReferenceById(topicAddRequest.getSensorId())).thenReturn(mock(Sensor.class));
         when(topicTypeRepository.findById(topicAddRequest.getTopicType())).thenReturn(Optional.of(mock(TopicType.class)));
         when(topicRepository.save(any(Topic.class))).thenReturn(topic);
