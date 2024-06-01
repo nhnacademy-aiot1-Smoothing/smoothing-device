@@ -16,6 +16,7 @@ public class SensorErrorRequest {
     private String sensorErrorType;
     private LocalDateTime createdAt;
     private Double sensorValue;
+//    private Integer brokerId;
     private Integer sensorId;
     private String topic;
 }

@@ -8,7 +8,7 @@ Content-Type: application/json
 {
   "topic": "#",
   "topicType": "전력",
-  "sensorId": 15
+  "sensorId": 16
 }
 
 ### 토픽 목록 조회
@@ -36,11 +36,11 @@ Content-Type: application/json
 {
   "sensorName": "냉장2고 전기 센서",
   "sensorType": "전기",
-  "brokerId": 2
+  "brokerId": 4
 }
 
 ### 센서 목록 조회
-GET http://localhost:8005/api/device/sensors/2
+GET http://localhost:8005/api/device/sensors/4
 
 ### 센서 수정
 PUT http://localhost:8005/api/device/sensors/1
@@ -171,3 +171,15 @@ GET http://localhost:8005/api/device/topics?userId=haha&type=전력량&tags=NHN,
 
 ###
 GET http://localhost:8005/api/device/topics/sensors?userId=haha&type=전력량&tags=NHN,Office
+
+
+### 브로커 등록222
+POST http://localhost:8005/api/device/brokers
+Content-Type: application/json
+
+{
+  "brokerIp": "133.186.229.200",
+  "brokerPort": 1883,
+  "brokerName": "broker1",
+  "protocolType": "MQTT"
+}

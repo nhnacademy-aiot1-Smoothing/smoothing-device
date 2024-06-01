@@ -45,7 +45,7 @@ create table users
     user_name     varchar(255),
     user_email    varchar(255),
     user_state    varchar(255),
-    user_point    int,
+    user_point    bigint,
     last_access   date
 );
 
@@ -61,7 +61,7 @@ insert into users(user_id, user_password, user_name, user_email, user_state, use
 
 create table roles
 (
-    role_id   int primary key auto_increment,
+    role_id   bigint primary key auto_increment,
     role_info varchar(255)
 );
 
@@ -70,9 +70,9 @@ insert into roles(role_id, role_info) values (2, 'ROLE_USER');
 
 create table user_roles
 (
-    user_role_id int primary key auto_increment,
+    user_role_id bigint primary key auto_increment,
     user_id      varchar(255),
-    role_id      int,
+    role_id      bigint,
     foreign key (user_id) references users(user_id),
     foreign key (role_id) references roles(role_id)
 );
@@ -155,7 +155,7 @@ insert into user_oauths(provider_id, user_id, provider_key) values (5, 'haha', '
 
 create table attendances
 (
-    attendance_id int primary key auto_increment,
+    attendance_id bigint primary key auto_increment,
     user_id varchar(255),
     attendance_date date,
     foreign key (user_id) references users(user_id)
@@ -174,20 +174,20 @@ insert into attendances(user_id, attendance_date) values ('haha', '2024-05-09');
 
 create table point_details
 (
-    point_detail_id int primary key auto_increment,
+    point_detail_id bigint primary key auto_increment,
     user_id varchar(255),
-    point_amount int,
-    point_usage varchar(255),
-    point_date date,
+    point_detail_amount bigint,
+    point_detail_type varchar(255),
+    point_record_date date,
     foreign key (user_id) references users(user_id)
 );
 
-insert into point_details(user_id, point_amount, point_usage, point_date) values ('haha', 10000, '적립', '2024-05-01');
-insert into point_details(user_id, point_amount, point_usage, point_date) values ('haha', 10000, '적립', '2024-05-02');
-insert into point_details(user_id, point_amount, point_usage, point_date) values ('haha', 10000, '적립', '2024-05-03');
-insert into point_details(user_id, point_amount, point_usage, point_date) values ('haha', -3000, '사용', '2024-05-04');
-insert into point_details(user_id, point_amount, point_usage, point_date) values ('haha', 10000, '적립', '2024-05-05');
-insert into point_details(user_id, point_amount, point_usage, point_date) values ('haha', -20000, '사용', '2024-05-06');
+insert into point_details(user_id, point_detail_amount, point_detail_type, point_record_date)values ('haha', 10000, '적립', '2024-05-01');
+insert into point_details(user_id, point_detail_amount, point_detail_type, point_record_date)values ('haha', 10000, '적립', '2024-05-02');
+insert into point_details(user_id, point_detail_amount, point_detail_type, point_record_date)values ('haha', 10000, '적립', '2024-05-03');
+insert into point_details(user_id, point_detail_amount, point_detail_type, point_record_date)values ('haha', -3000, '사용', '2024-05-04');
+insert into point_details(user_id, point_detail_amount, point_detail_type, point_record_date)values ('haha', 10000, '적립', '2024-05-05');
+insert into point_details(user_id, point_detail_amount, point_detail_type, point_record_date)values ('haha', -20000, '사용', '2024-05-06');
 
 create table event_types
 (
@@ -213,10 +213,10 @@ insert into sub_events(event_type_id, user_id) values (2, 'haha');
 create table hook_types
 (
     hook_type_id int primary key auto_increment,
-    hook_type varchar(255)
+    hook_type_name varchar(255)
 );
 
-insert into hook_types(hook_type) values ('dooray');
+insert into hook_types(hook_type_name) values ('dooray');
 
 create table hooks
 (
@@ -232,15 +232,16 @@ insert into hooks(hook_url, user_id, hook_type_id) values ('http://localhost:808
 
 create table organization
 (
-    organization_id int primary key auto_increment,
-    organization_name varchar(255)
+    organization_name varchar(100) primary key,
+    business varchar(50),
+    location varchar(100)
 );
 
-insert into organization(organization_name) values ('NHN');
+insert into organization(organization_name,business,location) values ('NHN','Arcademy','김해시');
 
 create table goals
 (
-    goal_id int primary key auto_increment,
+    goal_id bigint primary key auto_increment,
     goal_date date,
     goal_amount double,
     amount double,
@@ -265,6 +266,7 @@ insert into goals(goal_date, goal_amount, amount, unit_price) values ('2024-02-0
 insert into goals(goal_date, goal_amount, amount, unit_price) values ('2024-03-01', 7000, 6600, 1500);
 insert into goals(goal_date, goal_amount, amount, unit_price) values ('2024-04-01', 6000, 5300, 1500);
 insert into goals(goal_date, goal_amount, amount, unit_price) values ('2024-05-01', 3000, null, 1500);
+insert into goals(goal_date, goal_amount, amount, unit_price) values ('2024-06-01', 6000, null, 1500);
 
 create table control_sensors
 (

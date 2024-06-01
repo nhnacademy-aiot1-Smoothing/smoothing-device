@@ -89,16 +89,16 @@ public class BrokerServiceImpl implements BrokerService {
                 .build();
         broker = brokerRepository.save(broker);
 
-        try {
+//        try {
             ruleEngineAdapter.addBroker(BrokerGenerateRequest.builder()
                     .brokerId(broker.getBrokerId())
                     .brokerIp(broker.getBrokerIp())
                     .brokerPort(broker.getBrokerPort())
                     .protocolType(protocolType.getProtocolType())
                     .build());
-        }catch (Exception e) {
-        log.error("Rule Engine Broker Add Error : {}", e.getMessage());
-        }
+//        }catch (Exception e) {
+//        log.error("Rule Engine Broker Add Error : {}", e.getMessage());
+//        }
     }
 
     /**
