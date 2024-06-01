@@ -30,7 +30,7 @@ public class RabbitErrorConsumer {
      */
     @RabbitListener(queues = "add-brokerError-queue", containerFactory = "jsonContainerFactory")
     public void receiveAddBrokerErrorMessage(BrokerErrorRequest request) {
-        brokerService.addBrokerError(request);
+//        brokerService.addBrokerError(request);
     }
 
     /**

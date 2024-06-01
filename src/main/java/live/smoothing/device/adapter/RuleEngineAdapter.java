@@ -1,6 +1,7 @@
 package live.smoothing.device.adapter;
 
 import live.smoothing.device.broker.dto.BrokerGenerateRequest;
+import live.smoothing.device.feign.config.FeignConfig;
 import live.smoothing.device.sensor.dto.TopicRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  * @author 우혜승
  */
-@FeignClient(value = "rule-engine", path = "/api/ruleengine")
+@FeignClient(value = "rule-engine", path = "/api/ruleengine", configuration = FeignConfig.class)
 public interface RuleEngineAdapter {
 
     /**
