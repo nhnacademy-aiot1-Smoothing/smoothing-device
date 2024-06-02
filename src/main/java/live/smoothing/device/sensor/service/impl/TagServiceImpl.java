@@ -59,7 +59,7 @@ public class TagServiceImpl implements TagService {
      * @inheritDoc
      */
     @Override
-    public void addTag(String userId, TagRequest tagRequest) {
+    public synchronized void addTag(String userId, TagRequest tagRequest) {
         if(tagRepository.existsByUserIdAndTagName(userId, tagRequest.getTagName())) {
             throw new TagAlreadyExistException();
         }
@@ -92,7 +92,7 @@ public class TagServiceImpl implements TagService {
      * @inheritDoc
      */
     @Override
-    public void deleteTag(String userId, Integer tagId) {
+    public synchronized void deleteTag(String userId, Integer tagId) {
         Tag tag = tagRepository.findById(tagId)
                 .orElseThrow(TagNotFoundException::new);
         if(!tag.getUserId().equals(userId)) {
@@ -107,7 +107,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void addSensorTag(String userId, SensorTagAddRequest sensorTagAddRequest) {
+    public synchronized void addSensorTag(String userId, SensorTagAddRequest sensorTagAddRequest) {
         if(sensorTagRepository.existsByTagTagIdAndSensorSensorId(sensorTagAddRequest.getTagId(), sensorTagAddRequest.getSensorId())) {
             throw new SensorTagAlreadyExistException();
         }
@@ -119,7 +119,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void removeSensorTag(String userId, Integer sensorId, Integer tagId) {
+    public synchronized void removeSensorTag(String userId, Integer sensorId, Integer tagId) {
 
         SensorTag sensorTag = sensorTagRepository.findBySensorSensorIdAndTagTagId(sensorId, tagId);
 
