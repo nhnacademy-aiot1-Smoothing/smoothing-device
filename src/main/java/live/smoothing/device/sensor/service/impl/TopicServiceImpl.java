@@ -42,7 +42,7 @@ public class TopicServiceImpl implements TopicService {
      */
     @Override
     @Transactional
-    public void saveTopic(TopicAddRequest topicAddRequest) {
+    public synchronized void saveTopic(TopicAddRequest topicAddRequest) {
         if (topicRepository.existsTopicByTopicAndSensorSensorId(topicAddRequest.getTopic(), topicAddRequest.getSensorId())) {
             throw new TopicAlreadyExistException();
         }
@@ -106,7 +106,7 @@ public class TopicServiceImpl implements TopicService {
      */
     @Override
     @Transactional
-    public void deleteTopic(Integer topicId) {
+    public synchronized void deleteTopic(Integer topicId) {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new TopicNotFoundException());
         topicRepository.delete(topic);

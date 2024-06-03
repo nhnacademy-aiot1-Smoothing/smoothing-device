@@ -54,7 +54,7 @@ public class SensorServiceImpl implements SensorService {
      */
     @Override
     @Transactional
-    public void saveSensor(SensorRegisterRequest sensorRegisterRequest) {
+    public synchronized void saveSensor(SensorRegisterRequest sensorRegisterRequest) {
         SensorType sensorType = sensorTypeRepository.findById(sensorRegisterRequest.getSensorType())
                 .orElseThrow(SensorTypeNotFoundException::new);
         Broker broker = brokerRepository.findById(sensorRegisterRequest.getBrokerId())
@@ -103,7 +103,7 @@ public class SensorServiceImpl implements SensorService {
      * @inheritDoc
      */
     @Override
-    public void deleteSensor(Integer sensorId) {
+    public synchronized void deleteSensor(Integer sensorId) {
         Sensor sensor = sensorRepository.findSensorWithTopicBySensorId(sensorId)
                 .orElseThrow(SensorNotFoundException::new);
         sensorRepository.delete(sensor);
@@ -130,7 +130,7 @@ public class SensorServiceImpl implements SensorService {
      * @inheritDoc
      */
     @Override
-    public void deleteSensorError(Integer sensorErrorId) {
+    public synchronized void deleteSensorError(Integer sensorErrorId) {
         SensorErrorLog sensorErrorLog = sensorErrorLogRepository.findById(sensorErrorId)
                 .orElseThrow(SensorErrorLogNotFoundException::new);
         sensorErrorLogRepository.delete(sensorErrorLog);
