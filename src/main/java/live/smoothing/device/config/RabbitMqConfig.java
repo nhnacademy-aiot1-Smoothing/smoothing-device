@@ -89,15 +89,15 @@ public class RabbitMqConfig {
 //        return new DirectExchange("error-direct-exchange");
 //    }
 //
-//    @Bean
-//    public Queue addBrokerErrorQueue() {
-//        return new Queue("add-brokerError-queue");
-//    }
-//
-//    @Bean
-//    public Queue addSensorErrorQueue() {
-//        return new Queue("add-sensorError-queue");
-//    }
+    @Bean
+    public Queue addBrokerErrorQueue() {
+        return new Queue("add-brokerError-queue");
+    }
+
+    @Bean
+    public Queue addSensorErrorQueue() {
+        return new Queue("add-sensorError-queue");
+    }
 //
 //    @Bean
 //    public Binding addBrokerBinding() {
