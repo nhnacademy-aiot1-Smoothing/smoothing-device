@@ -14,4 +14,6 @@ import java.util.List;
 public class SensorErrorListResponse {
     @JsonProperty("errors")
     private final List<SensorErrorResponse> errors;
+    @JsonProperty("totalPage")
+    private final int totalPage;
 }
