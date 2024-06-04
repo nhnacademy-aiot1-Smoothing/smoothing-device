@@ -150,20 +150,20 @@ public class SensorServiceImpl implements SensorService {
     @Override
     @Transactional
     public void addSensorError(SensorErrorRequest request) {
-        Optional<Sensor> sensor = sensorRepository.findById(request.getSensorId());
-        if (sensor.isEmpty()) {
-            log.error("Sensor not found with id: {}", request.getSensorId());
+        Optional<Broker> broker = brokerRepository.findById(request.getBrokerId());
+        if (broker.isEmpty()) {
+            log.error("Broker not found with id: {}", request.getBrokerId());
             return;
         }
 
-        Optional<Topic> topic = topicRepository.findByTopicAndSensorSensorId(request.getTopic(), request.getSensorId());
+        Optional<Topic> topic = topicRepository.findByTopicAndSensorBrokerBrokerId(request.getTopic(), request.getBrokerId());
         if (topic.isEmpty()) {
-            log.error("Topic not found with topic: {} and sensorId: {}", request.getTopic(), request.getSensorId());
+            log.error("Topic not found with topic: {} and brokerId: {}", request.getTopic(), request.getBrokerId());
             return;
         }
 
         SensorErrorLog sensorErrorLog = SensorErrorLog.builder()
-                .sensor(sensor.get())
+                .broker(broker.get())
                 .sensorErrorType(request.getSensorErrorType())
                 .sensorErrorValue(request.getSensorValue())
                 .topic(topic.get())

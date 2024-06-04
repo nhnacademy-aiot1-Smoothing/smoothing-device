@@ -1,5 +1,6 @@
 package live.smoothing.device.sensor.entity;
 
+import live.smoothing.device.broker.entity.Broker;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ class SensorErrorLogTest {
             .sensorErrorType("error")
             .sensorErrorCreatedAt(LocalDateTime.now())
             .sensorErrorValue(1.0)
-            .sensor(new Sensor())
+            .broker(Broker.builder().build())
             .topic(new Topic())
             .build();
 
@@ -33,7 +34,7 @@ class SensorErrorLogTest {
 
     @Test
     void getSensor() {
-        assertNotNull(sensorErrorLog.getSensor());
+        assertNotNull(sensorErrorLog.getBroker());
     }
 
     @Test

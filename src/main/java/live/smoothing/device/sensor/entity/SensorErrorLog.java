@@ -1,5 +1,6 @@
 package live.smoothing.device.sensor.entity;
 
+import live.smoothing.device.broker.entity.Broker;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,8 +37,8 @@ public class SensorErrorLog {
     private Double sensorErrorValue;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinColumn(name="sensor_id")
-    private Sensor sensor;
+    @JoinColumn(name="broker_id")
+    private Broker broker;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name="topic_id")

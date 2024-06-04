@@ -83,7 +83,7 @@ class SensorErrorLogRepositoryTest {
                 .sensorErrorType("testSensorErrorType")
                 .sensorErrorCreatedAt(LocalDateTime.now())
                 .sensorErrorValue(1.0)
-                .sensor(sensor)
+                .broker(broker)
                 .topic(topic)
                 .build();
         brokerRepository.save(broker);

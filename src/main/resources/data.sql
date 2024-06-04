@@ -376,9 +376,9 @@ create table sensor_error_logs
     sensor_error_type varchar(255),
     sensor_error_created_at datetime,
     sensor_error_value double,
-    sensor_id int,
+    broker_id int,
     topic_id int,
-    foreign key (sensor_id) references sensors(sensor_id) on delete cascade,
+    foreign key (broker_id) references brokers(broker_id) on delete cascade,
     foreign key (topic_id) references topics(topic_id) on delete cascade
 );
 
@@ -544,6 +544,6 @@ insert into sensor_tags(tag_id, sensor_id) values (2, 6);
 insert into sensor_tags(tag_id, sensor_id) values (2, 7);
 insert into sensor_tags(tag_id, sensor_id) values (2, 8);
 
-insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, sensor_id, topic_id) values ('이상치', '2024-05-01', 11.5, 1, 1);
-insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, sensor_id, topic_id) values ('이상치', '2024-05-02', 30.9, 2, 3);
-insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, sensor_id, topic_id) values ('이상치', '2024-05-03', 114, 3, 5);
+insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, broker_id, topic_id) values ('이상치', '2024-05-01', 11.5, 1, 1);
+insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, broker_id, topic_id) values ('이상치', '2024-05-02', 30.9, 1, 3);
+insert into sensor_error_logs(sensor_error_type, sensor_error_created_at, sensor_error_value, broker_id, topic_id) values ('이상치', '2024-05-03', 114, 1, 5);

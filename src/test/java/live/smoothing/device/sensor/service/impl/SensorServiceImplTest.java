@@ -221,24 +221,24 @@ class SensorServiceImplTest {
     }
 
     @Test
-    void addSensorError_sensorNotFound(CapturedOutput capturedOutput) {
+    void addSensorError_brokerNotFound(CapturedOutput capturedOutput) {
         SensorErrorRequest request = mock(SensorErrorRequest.class);
-        when(request.getSensorId()).thenReturn(1);
-        when(sensorRepository.findById(request.getSensorId())).thenReturn(Optional.empty());
+        when(request.getBrokerId()).thenReturn(1);
+        when(brokerRepository.findById(request.getBrokerId())).thenReturn(Optional.empty());
 
         sensorService.addSensorError(request);
-        assertTrue(capturedOutput.getOut().contains("Sensor not found with id: 1"));
+        assertTrue(capturedOutput.getOut().contains("Broker not found with id: 1"));
     }
 
     @Test
     void addSensorError_topicNotFound(CapturedOutput capturedOutput) {
         SensorErrorRequest request = mock(SensorErrorRequest.class);
-        when(request.getSensorId()).thenReturn(1);
-        when(sensorRepository.findById(request.getSensorId())).thenReturn(Optional.of(mock(Sensor.class)));
-        when(topicRepository.findByTopicAndSensorSensorId(request.getTopic(), request.getSensorId())).thenReturn(Optional.empty());
+        when(request.getBrokerId()).thenReturn(1);
+        when(brokerRepository.findById(request.getBrokerId())).thenReturn(Optional.of(mock(Broker.class)));
+        when(topicRepository.findByTopicAndSensorBrokerBrokerId(request.getTopic(), request.getBrokerId())).thenReturn(Optional.empty());
 
         sensorService.addSensorError(request);
-        assertTrue(capturedOutput.getOut().contains("Topic not found with topic: null and sensorId: 1"));
+        assertTrue(capturedOutput.getOut().contains("Topic not found with topic: null and brokerId: 1"));
     }
 
     @Test
@@ -247,12 +247,12 @@ class SensorServiceImplTest {
         ReflectionTestUtils.setField(request, "sensorErrorType", "sensorErrorType");
         ReflectionTestUtils.setField(request, "createdAt", LocalDateTime.now());
         ReflectionTestUtils.setField(request, "sensorValue", 1.0);
-        ReflectionTestUtils.setField(request, "sensorId", 1);
+        ReflectionTestUtils.setField(request, "brokerId", 1);
         ReflectionTestUtils.setField(request, "topic", "topic");
-        Sensor sensor = new Sensor();
+        Broker broker = Broker.builder().build();
         Topic topic = new Topic();
-        when(sensorRepository.findById(request.getSensorId())).thenReturn(Optional.of(sensor));
-        when(topicRepository.findByTopicAndSensorSensorId(request.getTopic(), request.getSensorId())).thenReturn(Optional.of(topic));
+        when(brokerRepository.findById(request.getBrokerId())).thenReturn(Optional.of(broker));
+        when(topicRepository.findByTopicAndSensorBrokerBrokerId(request.getTopic(), request.getBrokerId())).thenReturn(Optional.of(topic));
 
         sensorService.addSensorError(request);
         verify(sensorErrorLogRepository, times(1)).save(any());

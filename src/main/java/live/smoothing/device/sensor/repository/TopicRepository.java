@@ -1,5 +1,6 @@
 package live.smoothing.device.sensor.repository;
 
+import live.smoothing.device.broker.entity.Broker;
 import live.smoothing.device.sensor.dto.SensorTopicDto;
 import live.smoothing.device.sensor.dto.TopicResponse;
 import live.smoothing.device.sensor.entity.Topic;
@@ -54,6 +55,8 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
      * @return 토픽과 센서 아이디로 조회된 토픽
      */
     Optional<Topic> findByTopicAndSensorSensorId(String topic, Integer sensorId);
+
+    Optional<Topic> findByTopicAndSensorBrokerBrokerId(String topic, Integer brokerId);
 
     /**
      * 센서 타입으로 토픽 목록 조회
