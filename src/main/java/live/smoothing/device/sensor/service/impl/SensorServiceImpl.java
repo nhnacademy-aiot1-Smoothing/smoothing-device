@@ -123,7 +123,7 @@ public class SensorServiceImpl implements SensorService {
     @Override
     public SensorErrorListResponse getSensorErrors(Pageable pageable) {
         Page<SensorErrorResponse> sensorErrorResponses = sensorErrorLogRepository.findAllSensorErrorLogs(pageable);
-        return new SensorErrorListResponse(sensorErrorResponses.getContent());
+        return new SensorErrorListResponse(sensorErrorResponses.getContent(), sensorErrorResponses.getTotalPages());
     }
 
     /**
