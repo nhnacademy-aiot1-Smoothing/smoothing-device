@@ -36,11 +36,11 @@ public class SensorErrorLog {
     @Column(name = "sensor_error_value")
     private Double sensorErrorValue;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="broker_id")
     private Broker broker;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="topic_id")
     private Topic topic;
 
