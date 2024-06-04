@@ -15,8 +15,8 @@ public class SensorErrorResponse {
     private final Integer sensorErrorId;
     @JsonProperty("sensorErrorType")
     private final String sensorErrorType;
-    @JsonProperty("sensorName")
-    private final String sensorName;
+    @JsonProperty("brokerName")
+    private final String brokerName;
     @JsonProperty("createdAt")
     private final String createdAt;
     @JsonProperty("value")
@@ -24,10 +24,10 @@ public class SensorErrorResponse {
     @JsonProperty("topic")
     private final String topic;
 
-    public SensorErrorResponse(Integer sensorErrorId ,String sensorErrorType, String sensorName, LocalDateTime createdAt, Double value, String topic) {
+    public SensorErrorResponse(Integer sensorErrorId ,String sensorErrorType, String brokerName, LocalDateTime createdAt, Double value, String topic) {
         this.sensorErrorId = sensorErrorId;
         this.sensorErrorType = sensorErrorType;
-        this.sensorName = sensorName;
+        this.brokerName = brokerName;
         this.createdAt = createdAt == null ? null : createdAt.toString();
         this.value = value;
         this.topic = topic;
