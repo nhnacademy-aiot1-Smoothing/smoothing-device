@@ -90,7 +90,7 @@ class SensorControllerTest {
 
     @Test
     void getErrors() throws Exception {
-        SensorErrorListResponse sensorErrorListResponse = new SensorErrorListResponse(List.of());
+        SensorErrorListResponse sensorErrorListResponse = new SensorErrorListResponse(List.of(),1);
 
         when(sensorService.getSensorErrors(any())).thenReturn(sensorErrorListResponse);
 

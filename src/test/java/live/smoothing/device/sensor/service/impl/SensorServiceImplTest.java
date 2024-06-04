@@ -185,7 +185,7 @@ class SensorServiceImplTest {
         Page<SensorErrorResponse> sensorErrorLogs = mock(Page.class);
         when(sensorErrorLogRepository.findAllSensorErrorLogs(null)).thenReturn(sensorErrorLogs);
         when(sensorErrorLogs.getContent()).thenReturn(List.of(sensorErrorResponse));
-        SensorErrorListResponse expected = new SensorErrorListResponse(List.of(sensorErrorResponse));
+        SensorErrorListResponse expected = new SensorErrorListResponse(List.of(sensorErrorResponse),1);
 
         SensorErrorListResponse actual = sensorService.getSensorErrors(null);
         assertEquals(ReflectionTestUtils.getField(expected, "errors"), ReflectionTestUtils.getField(actual, "errors"));
