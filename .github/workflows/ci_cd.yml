@@ -51,5 +51,11 @@ jobs:
         script_stop: true
         script: |
           sudo docker build -t device:latest ./ --build-arg FILE=target/device-0.0.1-SNAPSHOT.jar
-          sudo docker stop $(sudo docker ps -a | grep device | awk '{print $1}') && sudo docker rm $(sudo docker ps -a | grep device | awk '{print $1}')
+          containers=$(sudo docker ps -a | grep device | awk '{print $1}')
+          if [ -n "$containers" ]; then
+            sudo docker stop $containers
+            sudo docker rm $containers
+          else
+            echo "No containers with 'device' found."
+          fi
           sudo docker run -d --network=host -p 8005:8005 device
