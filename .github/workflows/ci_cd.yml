@@ -48,7 +48,6 @@ jobs:
         username: ${{ secrets.SSH_ID }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
-        script_stop: true
         script: |
           sudo docker build -t device:latest ./ --build-arg FILE=target/device-0.0.1-SNAPSHOT.jar
           containers=$(sudo docker ps -a | grep device | awk '{print $1}')
