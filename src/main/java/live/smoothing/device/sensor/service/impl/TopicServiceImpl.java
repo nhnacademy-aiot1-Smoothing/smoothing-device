@@ -4,6 +4,7 @@ import feign.FeignException;
 import live.smoothing.device.adapter.RuleEngineAdapter;
 import live.smoothing.device.sensor.dto.TopicResponseListResponse;
 import live.smoothing.device.sensor.dto.*;
+import live.smoothing.device.sensor.entity.Sensor;
 import live.smoothing.device.sensor.entity.Topic;
 import live.smoothing.device.sensor.entity.TopicType;
 import live.smoothing.device.sensor.exception.TopicAlreadyExistException;
@@ -48,10 +49,12 @@ public class TopicServiceImpl implements TopicService {
         }
         TopicType topicType = topicTypeRepository.findById(topicAddRequest.getTopicType())
                 .orElseThrow(TopicTypeNotExistException::new);
+        Sensor sensor = sensorRepository.findById(topicAddRequest.getSensorId())
+                .orElseThrow(SensorNotFoundException::new);
         Topic topic = Topic.builder()
                 .topic(topicAddRequest.getTopic())
                 .topicType(topicType)
-                .sensor(sensorRepository.getReferenceById(topicAddRequest.getSensorId()))
+                .sensor(sensor)
                 .build();
 
         topic = topicRepository.save(topic);
@@ -86,6 +89,10 @@ public class TopicServiceImpl implements TopicService {
 
         TopicType topicType = topicTypeRepository.findById(topicUpdateRequest.getTopicType())
                 .orElseThrow(TopicTypeNotExistException::new);
+
+        if(topicRepository.existsTopicByTopic(topicUpdateRequest.getTopic()) && !topic.getTopic().equals(topicUpdateRequest.getTopic())) {
+            throw new TopicAlreadyExistException();
+        }
 
         String oldTopic = topic.getTopic();
 

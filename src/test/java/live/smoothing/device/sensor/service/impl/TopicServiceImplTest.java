@@ -71,13 +71,25 @@ class TopicServiceImplTest {
     }
 
     @Test
+    void saveTopic_sensorNotExist_throwError() {
+        TopicAddRequest topicAddRequest = mock(TopicAddRequest.class);
+
+        when(topicAddRequest.getTopic()).thenReturn("testTopic");
+        when(topicRepository.existsTopicByTopicAndSensorSensorId(topicAddRequest.getTopic(),topicAddRequest.getSensorId())).thenReturn(false);
+        when(topicTypeRepository.findById(topicAddRequest.getTopicType())).thenReturn(Optional.of(mock(TopicType.class)));
+        when(sensorRepository.findById(topicAddRequest.getSensorId())).thenReturn(Optional.empty());
+
+        assertThrows(SensorNotFoundException.class, () -> topicService.saveTopic(topicAddRequest));
+    }
+
+    @Test
     void saveTopic() {
         TopicAddRequest topicAddRequest = mock(TopicAddRequest.class);
         Topic topic = mock(Topic.class);
 
         when(topicAddRequest.getTopic()).thenReturn("testTopic");
         when(topicRepository.existsTopicByTopicAndSensorSensorId(topicAddRequest.getTopic(),topicAddRequest.getSensorId())).thenReturn(false);
-        when(sensorRepository.getReferenceById(topicAddRequest.getSensorId())).thenReturn(mock(Sensor.class));
+        when(sensorRepository.findById(topicAddRequest.getSensorId())).thenReturn(Optional.of(mock(Sensor.class)));
         when(topicTypeRepository.findById(topicAddRequest.getTopicType())).thenReturn(Optional.of(mock(TopicType.class)));
         when(topicRepository.save(any(Topic.class))).thenReturn(topic);
 
@@ -138,6 +150,22 @@ class TopicServiceImplTest {
     }
 
     @Test
+    void updateTopic_topicAlreadyExist_throwError() {
+        Integer topicId = 1;
+        TopicUpdateRequest topicUpdateRequest = mock(TopicUpdateRequest.class);
+        Topic topic = new Topic();
+
+        ReflectionTestUtils.setField(topic, "topic", "oldTopic");
+        ReflectionTestUtils.setField(topic, "sensor", mock(Sensor.class));
+        when(topicRepository.findById(topicId)).thenReturn(Optional.of(topic));
+        when(topicUpdateRequest.getTopic()).thenReturn("newTopic");
+        when(topicTypeRepository.findById(topicUpdateRequest.getTopicType())).thenReturn(Optional.of(mock(TopicType.class)));
+        when(topicRepository.existsTopicByTopic(topicUpdateRequest.getTopic())).thenReturn(true);
+
+        assertThrows(TopicAlreadyExistException.class, () -> topicService.updateTopic(topicId, topicUpdateRequest));
+    }
+
+    @Test
     void updateTopic() {
         Integer topicId = 1;
         TopicUpdateRequest topicUpdateRequest = new TopicUpdateRequest();
@@ -156,6 +184,7 @@ class TopicServiceImplTest {
         ReflectionTestUtils.setField(topicUpdateRequest, "topicType", "testTopicType");
         when(topicRepository.findById(topicId)).thenReturn(Optional.of(topic));
         when(topicTypeRepository.findById(topicUpdateRequest.getTopicType())).thenReturn(Optional.of(topicType));
+        when(topicRepository.existsTopicByTopic(topicUpdateRequest.getTopic())).thenReturn(false);
         when(topicRepository.save(topic)).thenReturn(topic);
 
         topicService.updateTopic(topicId, topicUpdateRequest);
