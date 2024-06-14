@@ -209,6 +209,30 @@ class BrokerServiceImplTest {
     }
 
     @Test
+    void updateBroker_alreadyExistBroker_throwError(){
+        Integer brokerId = 1;
+        BrokerUpdateRequest brokerUpdateRequest = new BrokerUpdateRequest();
+        ReflectionTestUtils.setField(brokerUpdateRequest, "brokerIp", "123.456.789.0");
+        ReflectionTestUtils.setField(brokerUpdateRequest, "brokerPort", 1234);
+        ReflectionTestUtils.setField(brokerUpdateRequest, "brokerName", "testBroker");
+        ReflectionTestUtils.setField(brokerUpdateRequest, "protocolType", "testProtocolType");
+
+        Broker broker = Broker.builder()
+                .brokerId(1)
+                .brokerIp("123.456.789.0")
+                .brokerPort(1234)
+                .protocolType(new ProtocolType("testProtocolType"))
+                .build();
+
+        when(brokerRepository.findById(brokerId)).thenReturn(Optional.of(broker));
+        when(protocolTypeRepository.findById(brokerUpdateRequest.getProtocolType())).thenReturn(Optional.of(new ProtocolType(brokerUpdateRequest.getProtocolType())));
+        when(brokerRepository.existsByBrokerIpAndBrokerPort(brokerUpdateRequest.getBrokerIp(), brokerUpdateRequest.getBrokerPort())).thenReturn(true);
+
+        assertThrows(AlreadyExistBroker.class, () -> brokerService.updateBroker(brokerId, brokerUpdateRequest));
+        verify(brokerRepository, times(0)).save(any(Broker.class));
+    }
+
+    @Test
     void updateBroker(){
         Integer brokerId = 1;
         BrokerUpdateRequest brokerUpdateRequest = new BrokerUpdateRequest();
@@ -244,6 +268,7 @@ class BrokerServiceImplTest {
         when(protocolTypeRepository.findById(brokerUpdateRequest.getProtocolType())).thenReturn(Optional.of(new ProtocolType(brokerUpdateRequest.getProtocolType())));
         when(brokerRepository.save(any(Broker.class))).thenReturn(broker);
         when(topicRepository.getTopicBySensorBrokerBrokerId(brokerId)).thenReturn(topics);
+        when(brokerRepository.existsByBrokerIpAndBrokerPort(brokerUpdateRequest.getBrokerIp(), brokerUpdateRequest.getBrokerPort())).thenReturn(false);
 
         brokerService.updateBroker(brokerId, brokerUpdateRequest);
 
