@@ -6,10 +6,7 @@ import live.smoothing.device.sensor.dto.*;
 import live.smoothing.device.sensor.entity.Sensor;
 import live.smoothing.device.sensor.entity.SensorTag;
 import live.smoothing.device.sensor.entity.Tag;
-import live.smoothing.device.sensor.exception.SensorTagAlreadyExistException;
-import live.smoothing.device.sensor.exception.TagAlreadyExistException;
-import live.smoothing.device.sensor.exception.TagNotFoundException;
-import live.smoothing.device.sensor.exception.TagOwnerException;
+import live.smoothing.device.sensor.exception.*;
 import live.smoothing.device.sensor.repository.CustomTagRepository;
 import live.smoothing.device.sensor.repository.SensorRepository;
 import live.smoothing.device.sensor.repository.SensorTagRepository;
@@ -84,6 +81,9 @@ public class TagServiceImpl implements TagService {
         if(!tag.getUserId().equals(userId)) {
             throw new TagOwnerException();
         }
+        if(tagRepository.existsByUserIdAndTagName(userId,tagRequest.getTagName()) && !tag.getTagName().equals(tagRequest.getTagName())) {
+            throw new TagAlreadyExistException();
+        }
         tag.updateTagName(tagRequest.getTagName());
         tagRepository.save(tag);
     }
@@ -111,9 +111,16 @@ public class TagServiceImpl implements TagService {
         if(sensorTagRepository.existsByTagTagIdAndSensorSensorId(sensorTagAddRequest.getTagId(), sensorTagAddRequest.getSensorId())) {
             throw new SensorTagAlreadyExistException();
         }
+        Tag tag = tagRepository.findById(sensorTagAddRequest.getTagId())
+                .orElseThrow(TagNotFoundException::new);
+        if(!Objects.equals(tag.getUserId(), userId)) {
+            throw new TagOwnerException();
+        }
+        Sensor sensor = sensorRepository.findById(sensorTagAddRequest.getSensorId())
+                .orElseThrow(SensorNotFoundException::new);
         SensorTag sensorTag = SensorTag.builder()
-                .tag(tagRepository.getReferenceById(sensorTagAddRequest.getTagId()))
-                .sensor(sensorRepository.getReferenceById(sensorTagAddRequest.getSensorId()))
+                .tag(tag)
+                .sensor(sensor)
                 .build();
         sensorTagRepository.save(sensorTag);
     }

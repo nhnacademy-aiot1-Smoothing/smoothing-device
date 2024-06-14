@@ -22,6 +22,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -141,6 +142,27 @@ class TagServiceImplTest {
     }
 
     @Test
+    void updateTag_TagAlreadyExistException() {
+        Integer tagId = 1;
+        String userId = "testUserId";
+        TagRequest tagRequest = mock(TagRequest.class);
+        TagResponse tagResponse = mock(TagResponse.class);
+
+        Tag tag = mock(Tag.class);
+
+        when(tag.getTagName()).thenReturn("testTagName2");
+        when(tagRepository.findById(tagId))
+                .thenReturn(java.util.Optional.of(tag));
+        when(tag.getUserId()).thenReturn(userId);
+        when(tagRequest.getTagName()).thenReturn("testTagName");
+
+        when(tagRepository.existsByUserIdAndTagName(userId, tagRequest.getTagName()))
+                .thenReturn(true);
+
+        assertThrows(TagAlreadyExistException.class, () -> tagService.updateTag(tagId, userId, tagRequest));
+    }
+
+    @Test
     void updateTag() {
         Integer tagId = 1;
         String userId = "testUserId";
@@ -153,6 +175,8 @@ class TagServiceImplTest {
         when(tagRepository.findById(tagId))
                 .thenReturn(java.util.Optional.of(tag));
         when(tagRequest.getTagName()).thenReturn("testTagName");
+        when(tagRepository.existsByUserIdAndTagName(userId, tagRequest.getTagName()))
+                .thenReturn(false);
 
         tagService.updateTag(tagId, userId, tagRequest);
         verify(tagRepository).save(tag);
@@ -231,10 +255,15 @@ class TagServiceImplTest {
         when(sensorTagRepository.existsByTagTagIdAndSensorSensorId(sensorTagAddRequest.getTagId(), sensorTagAddRequest.getSensorId()))
                 .thenReturn(false);
 
-        when(tagRepository.getReferenceById(sensorTagAddRequest.getTagId()))
-                .thenReturn(mock(Tag.class));
-        when(sensorRepository.getReferenceById(sensorTagAddRequest.getSensorId()))
-                .thenReturn(mock(Sensor.class));
+        Tag tag = Tag.builder()
+                .userId(userId)
+                .build();
+
+        when(tagRepository.findById(sensorTagAddRequest.getTagId()))
+                .thenReturn(Optional.ofNullable(tag));
+
+        when(sensorRepository.findById(sensorTagAddRequest.getSensorId()))
+                .thenReturn(Optional.ofNullable(mock(Sensor.class)));
 
         tagService.addSensorTag(userId, sensorTagAddRequest);
         verify(sensorTagRepository).save(any());
