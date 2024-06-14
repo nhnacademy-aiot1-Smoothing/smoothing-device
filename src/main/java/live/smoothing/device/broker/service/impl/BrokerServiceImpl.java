@@ -122,6 +122,10 @@ public class BrokerServiceImpl implements BrokerService {
         ProtocolType protocolType = protocolTypeRepository.findById(brokerUpdateRequest.getProtocolType())
                 .orElseThrow(ProtocolTypeNotFoundException::new);
 
+        if (brokerRepository.existsByBrokerIpAndBrokerPort(brokerUpdateRequest.getBrokerIp(), brokerUpdateRequest.getBrokerPort())) {
+            throw new AlreadyExistBroker();
+        }
+
         broker.updateBrokerIp(brokerUpdateRequest.getBrokerIp());
         broker.updateBrokerPort(brokerUpdateRequest.getBrokerPort());
         broker.updateBrokerName(brokerUpdateRequest.getBrokerName());
