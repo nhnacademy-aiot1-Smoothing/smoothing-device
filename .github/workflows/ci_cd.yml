@@ -57,4 +57,4 @@ jobs:
           else
             echo "No containers with 'device' found."
           fi
-          sudo docker run -d --network=host device
+          sudo docker run -d --name device-service --network=smoothing --restart always device
